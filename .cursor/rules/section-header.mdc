@@ -1,0 +1,27 @@
+---
+description: RSI "section header" = eyebrow + headline + body + CTA text stack
+alwaysApply: true
+---
+
+# Section Header
+
+When the user says **section header**, they mean this text stack (canonical reference: homepage hero `.shell` copy block in `src/components/sections/Hero.tsx`):
+
+1. **Eyebrow** — `Eyebrow` / `.type-eyebrow` (Manrope, 14px, uppercase, tracked). No red rule line (`rule={false}`).
+2. **Headline** — display / Marcellus (hero: `.hero-headline`, 52px, single line when possible)
+3. **Body** — `.type-body` (Manrope, 14px, `max-w-xl`, relaxed leading)
+4. **CTA** — button row (primary + optional secondary)
+
+## Spacing (current approved)
+
+- Eyebrow → Headline: **0px**
+- Headline → Body: **0px**
+- Body → CTA row: **40px**
+- CTA buttons: `flex flex-col gap-3 sm:flex-row`
+
+## Rules
+
+- Reuse this stack structure and spacing whenever building or updating a section header.
+- Do not invent extra elements inside the stack (no badges, stats, or chips).
+- Adapt color for light/dark surfaces (`text-white/80` on dark; ink/muted on paper).
+- Prefer extracting a shared `SectionHeader` component if the same stack appears in multiple sections.

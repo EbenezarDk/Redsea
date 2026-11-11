@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-rsi: #d71932;
+  --color-rsi-deep: #a81226;
+  --color-charcoal: #161616;
+  --color-graphite: #2a2a2a;
+  --color-paper: #f6f4f1;
+  --color-mist: #ebe6df;
+  --color-ink: #141414;
+  --font-display: var(--font-display-family), "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  --font-body: var(--font-body-family), "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+.hero-headline {
+  font-size: 52px !important;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.type-eyebrow {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.type-body {
+  font-size: 14px !important;
+  font-weight: 400;
+}
+
+:root {
+  --shell-gutter: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --shell-gutter: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --shell-gutter: 3rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --shell-gutter: max(4rem, calc((100vw - 1440px) / 2));
+  }
+}
+
+html {
+  scroll-padding-top: 5.5rem;
+  background: #f6f4f1;
+}
+
+body {
+  background: #f6f4f1;
+  color: #161616;
+  text-rendering: optimizeLegibility;
+}
+
+[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+::selection {
+  background: #d71932;
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid #d71932;
+  outline-offset: 3px;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+.shell {
+  width: min(1440px, calc(100% - (var(--shell-gutter) * 2)));
+  margin-inline: auto;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 80;
+  transform: translateY(-160%);
+  background: #ffffff;
+  color: #161616;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.2;
+  mix-blend-mode: overlay;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.28) 0.6px, transparent 0.6px);
+  background-size: 3px 3px;
+}
+
+.blueprint {
+  background-color: #f6f4f1;
+  background-image:
+    linear-gradient(to right, rgba(22, 22, 22, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(22, 22, 22, 0.055) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-reveal {
+    animation: hero-rise 1.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .scroll-line {
+    transform-origin: top;
+    animation: scroll-hint 1.8s ease-in-out infinite;
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    transform: translate3d(0, 110%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes scroll-hint {
+  0% {
+    transform: scaleY(0.25);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(0.25);
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pin-layout {
+    display: none !important;
+  }
+
+  .flow-layout {
+    display: block !important;
+  }
+
+  .vcard,
+  .hero-reveal,
+  .scroll-line {
+    animation: none !important;
+    transition: none !important;
+  }
+}
