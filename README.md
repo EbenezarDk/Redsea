@@ -34,7 +34,7 @@ Anchors on `/businesses`: `#housing`, `#facilities`, `#first-fix`, `#real-estate
 
 Photography and video were not supplied. Sections use original modular studies (vector drawings), not photographs of RSI projects. Each study is mapped in `src/data/assets.ts` with `APPROVAL_REQUIRED` and an `intendedSrc` under `/public/images/rsi/`. Set `src` on a record to that approved file and the frame will use `next/image`.
 
-Do not drop unrelated stock into those paths and describe it as an RSI project. The working red `#D71932` is the palette from the master prompt; confirm it against official artwork before treating it as a brand lockup. The header mark is a typographic placeholder, not the official logo — replace `src/components/ui/Logo.tsx` when the logo file is approved.
+Do not drop unrelated stock into those paths and describe it as an RSI project. The working red `#D71932` is the palette from the master prompt; confirm it against official artwork before treating it as a brand lockup.
 
 ## Intentionally omitted
 
