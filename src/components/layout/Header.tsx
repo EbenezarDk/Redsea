@@ -11,6 +11,7 @@ import { AnimatedNavLink } from "@/components/navigation/AnimatedNavLink";
 import { MobileMenu } from "@/components/navigation/MobileMenu";
 import { ContactOverlay } from "@/components/navigation/ContactOverlay";
 import { usePageTransition } from "@/components/transitions/PageTransition";
+import { ScrollTrigger } from "@/lib/motion";
 
 function sectionIdFromHref(href: string) {
   if (!href.includes("#")) return null;
@@ -207,20 +208,31 @@ export function Header() {
     [activeHash, contactOpen, pathname],
   );
 
+  const scrollToTop = useCallback(() => {
+    window.history.replaceState(null, "", "/");
+    setHashState(null);
+    const lenis = lenisRef.current;
+    if (lenis) {
+      lenis.scrollTo(0, { force: true, duration: 1.05 });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    window.setTimeout(() => ScrollTrigger.refresh(), 120);
+  }, []);
+
   const scrollToHash = useCallback((href: string) => {
     const id = sectionIdFromHref(href);
-    if (!id) {
-      if (lenisRef.current) lenisRef.current.scrollTo(0);
-      else window.scrollTo({ top: 0, behavior: "smooth" });
+    if (!id || id === "top") {
+      scrollToTop();
       return;
     }
     const el = document.getElementById(id);
     if (!el) return;
-    if (lenisRef.current) lenisRef.current.scrollTo(el);
+    if (lenisRef.current) lenisRef.current.scrollTo(el, { offset: -88, force: true });
     else el.scrollIntoView({ behavior: "smooth" });
     window.history.replaceState(null, "", `/#${id}`);
     setHashState(id);
-  }, []);
+  }, [scrollToTop]);
 
   const handleNavigate = useCallback(
     (href: string, event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -233,12 +245,31 @@ export function Header() {
       }
 
       const path = href.split("#")[0] || "/";
-      const hasHash = href.includes("#");
-      const cinematic =
-        (pathname === "/" && path.startsWith("/businesses")) ||
-        (pathname.startsWith("/businesses") && (path === "/" || path === ""));
+      const hash = sectionIdFromHref(href);
+      const hasHash = Boolean(hash);
+      const toHome = path === "/" || path === "";
 
-      if (cinematic && transition) {
+      // Already on home — never remount; smooth-scroll to top or section.
+      if (pathname === "/" && toHome) {
+        event.preventDefault();
+        setMenuOpen(false);
+        setContactOpen(false);
+        if (!hasHash || hash === "top") scrollToTop();
+        else scrollToHash(href);
+        return;
+      }
+
+      // From Our Businesses → Home: hard reload for a fresh homepage start.
+      if (pathname.startsWith("/businesses") && toHome) {
+        event.preventDefault();
+        setMenuOpen(false);
+        setContactOpen(false);
+        window.location.assign("/");
+        return;
+      }
+
+      // Home → Businesses keeps the cinematic transition.
+      if (pathname === "/" && path.startsWith("/businesses") && transition) {
         event.preventDefault();
         setMenuOpen(false);
         setContactOpen(false);
@@ -246,29 +277,9 @@ export function Header() {
         return;
       }
 
-      if (pathname === "/" && (href === "/" || hasHash)) {
-        event.preventDefault();
-        setMenuOpen(false);
-        setContactOpen(false);
-        if (href === "/") {
-          scrollToHash("/");
-          window.history.replaceState(null, "", "/");
-          setHashState(null);
-        } else {
-          scrollToHash(href);
-        }
-        return;
-      }
-
-      if (pathname.startsWith("/businesses") && hasHash && path === "/") {
-        setContactOpen(false);
-        setMenuOpen(false);
-        return;
-      }
-
       setContactOpen(false);
     },
-    [pathname, scrollToHash, transition],
+    [pathname, scrollToHash, scrollToTop, transition],
   );
 
   const openContact = useCallback(() => {
@@ -308,7 +319,8 @@ export function Header() {
       >
         <div className="flex h-20 items-center justify-between px-[clamp(24px,4vw,80px)]">
           <Link
-            href="/#top"
+            href="/"
+            scroll={false}
             aria-label="Red Sea International, home"
             className="relative z-[60]"
             onClick={(event) => handleNavigate("/", event)}

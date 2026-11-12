@@ -89,6 +89,7 @@ export function AnimatedNavLink({
   return (
     <Link
       href={href}
+      scroll={false}
       aria-current={active ? "page" : undefined}
       onClick={(event) => onNavigate?.(href, event)}
       onPointerEnter={rollReel}

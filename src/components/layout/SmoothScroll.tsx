@@ -1,15 +1,24 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { lenisRef } from "@/lib/lenis";
 import { gsap, registerMotion, ScrollTrigger } from "@/lib/motion";
 
+function jumpToTop() {
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  lenisRef.current?.scrollTo(0, { immediate: true, force: true });
+}
+
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const initialLoad = useRef(true);
 
   useEffect(() => {
+    window.history.scrollRestoration = "manual";
     registerMotion();
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const fine = window.matchMedia("(pointer: fine) and (min-width: 1024px)").matches;
@@ -34,6 +43,12 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       gsap.ticker.add(ticker);
       gsap.ticker.lagSmoothing(0);
     }
+
+    // Always open a fresh page load at the top.
+    if (window.location.hash) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+    jumpToTop();
 
     const onClick = (event: MouseEvent) => {
       if (!lenisRef.current) return;
@@ -67,10 +82,19 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     };
 
     document.addEventListener("click", onClick);
-    const refresh = () => ScrollTrigger.refresh();
+    const refresh = () => {
+      jumpToTop();
+      ScrollTrigger.refresh();
+    };
     const frame = window.requestAnimationFrame(refresh);
-    const timer = window.setTimeout(refresh, 250);
-    document.fonts?.ready.then(refresh).catch(() => undefined);
+    const timer = window.setTimeout(() => {
+      jumpToTop();
+      ScrollTrigger.refresh();
+    }, 250);
+    document.fonts?.ready.then(() => {
+      jumpToTop();
+      ScrollTrigger.refresh();
+    }).catch(() => undefined);
 
     return () => {
       document.removeEventListener("click", onClick);
@@ -83,6 +107,14 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // First paint after a full load: stay at the top (already handled above).
+    if (initialLoad.current) {
+      initialLoad.current = false;
+      jumpToTop();
+      ScrollTrigger.refresh();
+      return;
+    }
+
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hash = window.location.hash;
     const timer = window.setTimeout(() => {
@@ -95,6 +127,8 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
             target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
           }
         }
+      } else {
+        jumpToTop();
       }
       ScrollTrigger.refresh();
     }, 60);

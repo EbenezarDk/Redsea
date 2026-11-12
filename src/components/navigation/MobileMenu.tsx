@@ -179,11 +179,11 @@ export function MobileMenu({
             <Link
               key={item.href}
               href={item.href}
+              scroll={false}
               data-mobile-link
               onClick={(event) => {
                 onNavigate?.(item.href, event);
-                if (!event.defaultPrevented) onClose();
-                else onClose();
+                onClose();
               }}
               className="border-b border-white/15 py-4 font-display text-[clamp(2.4rem,12vw,3.5rem)] font-normal leading-none tracking-[-0.03em]"
             >

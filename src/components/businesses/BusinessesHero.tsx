@@ -1,34 +1,12 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import { businessesPage } from "@/data/site-content";
-import { gsap, registerMotion } from "@/lib/motion";
 import { TextAnimate } from "@/registry/magicui/text-animate";
 
 const BANNER_SRC = "/images/rsi/luxury-glass-office-sunset.png";
 
 export function BusinessesHero() {
-  const path = useRef<SVGPathElement>(null);
-
-  useLayoutEffect(() => {
-    const line = path.current;
-    if (!line) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    registerMotion();
-    const length = line.getTotalLength();
-    const ctx = gsap.context(() => {
-      gsap.set(line, { strokeDasharray: length, strokeDashoffset: length });
-      gsap.to(line, {
-        strokeDashoffset: 0,
-        duration: 1.7,
-        ease: "power2.inOut",
-        delay: 0.25,
-      });
-    });
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section id="businesses-intro" className="relative overflow-hidden bg-charcoal text-white">
       <Image
@@ -79,21 +57,6 @@ export function BusinessesHero() {
           </TextAnimate>
         </div>
       </div>
-      <svg
-        className="pointer-events-none absolute bottom-0 left-0 z-10 h-28 w-full"
-        viewBox="0 0 1440 120"
-        preserveAspectRatio="none"
-        aria-hidden
-      >
-        <path
-          ref={path}
-          d="M120 0 V48 H1440"
-          fill="none"
-          stroke="#d71932"
-          strokeWidth="1.5"
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
     </section>
   );
 }
