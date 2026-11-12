@@ -35,7 +35,14 @@ function isLightBackground(color: string) {
   return luminance >= 0.72;
 }
 
-const LIGHT_SECTION_IDS = new Set(["about", "businesses", "projects", "services", "delivery"]);
+const LIGHT_SECTION_IDS = new Set([
+  "about",
+  "businesses",
+  "projects",
+  "services",
+  "delivery",
+  "contact",
+]);
 const HERO_SECTION_IDS = new Set(["top", "businesses-intro"]);
 
 function findSectionUnderHeader(): HTMLElement | null {
@@ -107,9 +114,18 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [surface, setSurface] = useState<HeaderSurface>("hero");
-  const [activeHash, setActiveHash] = useState<string | null>(null);
+  const [hashState, setHashState] = useState<string | null>(null);
+  const [menuPath, setMenuPath] = useState(pathname);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const contactCloseRef = useRef<(() => void) | null>(null);
+
+  // Close mobile menu when the route changes (render-time sync, not an effect).
+  if (menuPath !== pathname) {
+    setMenuPath(pathname);
+    if (menuOpen) setMenuOpen(false);
+  }
+
+  const activeHash = pathname === "/" ? hashState : null;
 
   useEffect(() => {
     let frame = 0;
@@ -142,18 +158,11 @@ export function Header() {
   }, [pathname, menuOpen, contactOpen]);
 
   useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
-    if (pathname !== "/") {
-      setActiveHash(null);
-      return;
-    }
+    if (pathname !== "/") return;
 
     const syncHash = () => {
       const hash = window.location.hash.replace("#", "") || null;
-      setActiveHash(hash === "top" ? null : hash);
+      setHashState(hash === "top" ? null : hash);
     };
     syncHash();
 
@@ -170,7 +179,7 @@ export function Header() {
         if (visible[0]?.target?.id) {
           const id = visible[0].target.id;
           if (id === "about" || id === "projects" || id === "contact") {
-            setActiveHash(id);
+            setHashState(id);
           }
         }
       },
@@ -210,7 +219,7 @@ export function Header() {
     if (lenisRef.current) lenisRef.current.scrollTo(el);
     else el.scrollIntoView({ behavior: "smooth" });
     window.history.replaceState(null, "", `/#${id}`);
-    setActiveHash(id);
+    setHashState(id);
   }, []);
 
   const handleNavigate = useCallback(
@@ -244,7 +253,7 @@ export function Header() {
         if (href === "/") {
           scrollToHash("/");
           window.history.replaceState(null, "", "/");
-          setActiveHash(null);
+          setHashState(null);
         } else {
           scrollToHash(href);
         }
@@ -366,7 +375,7 @@ export function Header() {
       <ContactOverlay
         open={contactOpen}
         onClose={closeContact}
-        registerClose={contactCloseRef}
+        registerCloseRef={contactCloseRef}
       />
     </>
   );

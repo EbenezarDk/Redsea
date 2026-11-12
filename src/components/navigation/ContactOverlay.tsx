@@ -10,13 +10,13 @@ import { cn } from "@/lib/cn";
 type ContactOverlayProps = {
   open: boolean;
   onClose: () => void;
-  registerClose?: React.MutableRefObject<(() => void) | null>;
+  registerCloseRef?: React.MutableRefObject<(() => void) | null>;
 };
 
 const CLIP_CLOSED = "inset(0 0 100% 0)";
 const CLIP_OPEN = "inset(0 0 0 0)";
 
-export function ContactOverlay({ open, onClose, registerClose }: ContactOverlayProps) {
+export function ContactOverlay({ open, onClose, registerCloseRef }: ContactOverlayProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
@@ -115,7 +115,7 @@ export function ContactOverlay({ open, onClose, registerClose }: ContactOverlayP
         );
     };
     animateCloseRef.current = animateClose;
-    if (registerClose) registerClose.current = animateClose;
+    if (registerCloseRef) registerCloseRef.current = animateClose;
 
     if (reduced) {
       gsap.set(overlay, {
@@ -210,9 +210,9 @@ export function ContactOverlay({ open, onClose, registerClose }: ContactOverlayP
       lenisRef.current?.start();
       timelineRef.current?.kill();
       previousFocus.current?.focus?.();
-      if (registerClose) registerClose.current = null;
+      if (registerCloseRef) registerCloseRef.current = null;
     };
-  }, [open, onClose, reduced, registerClose]);
+  }, [open, onClose, reduced, registerCloseRef]);
 
   const headlineLines = (() => {
     const title = contact.title.replace(/\.$/, "");

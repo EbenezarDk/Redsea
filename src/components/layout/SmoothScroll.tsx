@@ -83,16 +83,18 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const hash = window.location.hash;
-    if (!hash) return;
-    const target = document.querySelector(hash);
-    if (!(target instanceof HTMLElement)) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const hash = window.location.hash;
     const timer = window.setTimeout(() => {
-      if (lenisRef.current && !reduced) {
-        lenisRef.current.scrollTo(target, { offset: -88 });
-      } else {
-        target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+      if (hash) {
+        const target = document.querySelector(hash);
+        if (target instanceof HTMLElement) {
+          if (lenisRef.current && !reduced) {
+            lenisRef.current.scrollTo(target, { offset: -88 });
+          } else {
+            target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+          }
+        }
       }
       ScrollTrigger.refresh();
     }, 60);
