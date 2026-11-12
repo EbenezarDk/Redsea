@@ -5,7 +5,7 @@ import { about } from "@/data/site-content";
 import { DESKTOP_MOTION, gsap, registerMotion } from "@/lib/motion";
 import { AssetFrame } from "@/components/ui/AssetFrame";
 import { Button } from "@/components/ui/Button";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ScrollScene } from "@/components/motion/ScrollScene";
 
 export function About() {
@@ -72,12 +72,30 @@ export function About() {
     <ScrollScene id="about" ref={root} labelledBy="about-title" className="bg-paper">
       <div className="shell grid gap-12 py-24 md:py-32 lg:grid-cols-12 lg:gap-16 lg:py-40">
         <div className="lg:sticky lg:top-28 lg:col-span-5 lg:self-start">
-          <SectionHeading eyebrow={about.eyebrow} title={about.title} titleId="about-title">
-            <p>{about.body}</p>
-            <p className="mt-4">{about.support}</p>
-          </SectionHeading>
+          <div className="flex flex-col gap-[6px]">
+            <Eyebrow rule={false}>{about.eyebrow}</Eyebrow>
+            <h2
+              id="about-title"
+              className="hero-headline font-display font-normal"
+              style={{ fontSize: 52, marginTop: 0, marginBottom: 0 }}
+            >
+              {about.title}
+            </h2>
+            <p
+              className="type-body max-w-xl font-body leading-relaxed text-graphite"
+              style={{ fontSize: 14, marginTop: 0, marginBottom: 0 }}
+            >
+              {about.body}
+            </p>
+            <p
+              className="max-w-xl font-body font-semibold leading-relaxed text-rsi"
+              style={{ fontSize: 16, marginTop: 0, marginBottom: 0 }}
+            >
+              {about.support}
+            </p>
+          </div>
           <div className="mt-8">
-            <Button href={about.cta.href} variant="secondary" className="border-charcoal">
+            <Button href={about.cta.href} variant="primary">
               {about.cta.label}
             </Button>
           </div>
@@ -99,7 +117,11 @@ export function About() {
             {about.stats.map((stat) => (
               <li key={stat.full} className="flex items-baseline justify-between gap-6 py-5">
                 <span className="sr-only">{stat.full}</span>
-                <span aria-hidden className="font-display text-5xl font-normal leading-none tracking-[-0.04em] md:text-6xl">
+                <span
+                  aria-hidden
+                  className="hero-headline font-display font-normal"
+                  style={{ fontSize: 52 }}
+                >
                   {stat.figure}
                 </span>
                 <span aria-hidden className="max-w-[14rem] text-right text-sm text-graphite">

@@ -25,9 +25,9 @@ export default function BusinessesPage() {
       <ServicesOverview />
       <IntegratedDelivery />
       <CTA
-        secondary={{ label: contact.discussLabel, href: "/#contact" }}
+        padTop
         primary={{
-          label: contact.teamLabel,
+          label: contact.homeLabel,
           href: officialContactUrl,
           external: true,
         }}

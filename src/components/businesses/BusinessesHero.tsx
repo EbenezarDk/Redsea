@@ -1,9 +1,12 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
+import Image from "next/image";
 import { businessesPage } from "@/data/site-content";
 import { gsap, registerMotion } from "@/lib/motion";
-import { Eyebrow } from "@/components/ui/Eyebrow";
+import { TextAnimate } from "@/registry/magicui/text-animate";
+
+const BANNER_SRC = "/images/rsi/luxury-glass-office-sunset.png";
 
 export function BusinessesHero() {
   const path = useRef<SVGPathElement>(null);
@@ -28,23 +31,56 @@ export function BusinessesHero() {
 
   return (
     <section id="businesses-intro" className="relative overflow-hidden bg-charcoal text-white">
-      <div className="shell flex min-h-[100svh] flex-col justify-end pb-28 pt-32">
-        <Eyebrow light>{businessesPage.eyebrow}</Eyebrow>
-        <h1 className="mt-5 font-display text-[clamp(2.05rem,5.6vw,6rem)] font-normal leading-[0.95] tracking-[-0.02em]">
-          {businessesPage.title.map((line, index) => (
-            <span key={line} className="block overflow-hidden">
-              <span className="hero-reveal block" style={{ animationDelay: `${0.08 + index * 0.12}s` }}>
-                {line}
-              </span>
-            </span>
-          ))}
-        </h1>
-        <p className="type-body mt-6 max-w-2xl font-body leading-relaxed text-white/80">
-          {businessesPage.body}
-        </p>
+      <Image
+        src={BANNER_SRC}
+        alt="Luxury glass-walled office interior overlooking a city skyline at sunset."
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/70 to-charcoal/35"
+      />
+
+      <div className="shell relative z-10 flex min-h-[100svh] flex-col justify-end pb-28 pt-32">
+        <div className="flex flex-col gap-[6px]">
+          <TextAnimate
+            animation="fadeIn"
+            by="line"
+            as="p"
+            once
+            className="type-eyebrow font-body text-white/80"
+          >
+            {businessesPage.eyebrow}
+          </TextAnimate>
+          <TextAnimate
+            animation="fadeIn"
+            by="text"
+            as="h1"
+            once
+            delay={0.08}
+            className="hero-headline font-display font-normal"
+            style={{ fontSize: 52, marginTop: 0, marginBottom: 0 }}
+          >
+            {businessesPage.title.join(" ")}
+          </TextAnimate>
+          <TextAnimate
+            animation="fadeIn"
+            by="line"
+            as="p"
+            once
+            delay={0.16}
+            className="type-body w-full max-w-none font-body leading-relaxed text-white/80"
+            style={{ fontSize: 14, marginTop: 0, marginBottom: 0 }}
+          >
+            {businessesPage.body}
+          </TextAnimate>
+        </div>
       </div>
       <svg
-        className="pointer-events-none absolute bottom-0 left-0 h-28 w-full"
+        className="pointer-events-none absolute bottom-0 left-0 z-10 h-28 w-full"
         viewBox="0 0 1440 120"
         preserveAspectRatio="none"
         aria-hidden

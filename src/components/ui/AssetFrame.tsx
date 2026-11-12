@@ -17,7 +17,7 @@ export function AssetFrame({
   const asset = assets[id];
 
   return (
-    <div className={cn("relative h-full w-full overflow-hidden bg-charcoal", className)}>
+    <div className={cn("group relative h-full w-full overflow-hidden bg-charcoal", className)}>
       {asset.src ? (
         <Image
           src={asset.src}
@@ -25,7 +25,8 @@ export function AssetFrame({
           fill
           sizes={sizes}
           priority={priority}
-          className="object-cover"
+          className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover:scale-105"
+          style={{ objectFit: "cover", objectPosition: "center center" }}
         />
       ) : (
         <ModularStudy variant={asset.variant} alt={asset.alt} />

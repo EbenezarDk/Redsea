@@ -2,8 +2,11 @@
 
 import { useLayoutEffect, useRef } from "react";
 import { contact } from "@/data/site-content";
-import { gsap, registerMotion } from "@/lib/motion";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/cn";
+import { gsap, registerMotion, ScrollTrigger } from "@/lib/motion";
+
+const CTA_VIDEO_SRC = "/videos/cta-workers.mp4";
 
 type Action = {
   label: string;
@@ -15,72 +18,146 @@ export function CTA({
   id = "contact",
   primary,
   secondary,
+  padTop = false,
 }: {
   id?: string;
   primary: Action;
   secondary?: Action;
+  /** Match bottom padding on top — used on /businesses */
+  padTop?: boolean;
 }) {
   const root = useRef<HTMLElement>(null);
-  const shape = useRef<HTMLDivElement>(null);
+  const drawer = useRef<HTMLDivElement>(null);
+  const video = useRef<HTMLVideoElement>(null);
+  const content = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const media = video.current;
+    if (!media) return;
+
+    const tryPlay = () => {
+      media.muted = true;
+      media.playsInline = true;
+      void media.play().catch(() => undefined);
+    };
+
+    tryPlay();
+    media.addEventListener("loadeddata", tryPlay);
+    media.addEventListener("canplay", tryPlay);
+
+    return () => {
+      media.removeEventListener("loadeddata", tryPlay);
+      media.removeEventListener("canplay", tryPlay);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     const section = root.current;
-    const block = shape.current;
-    if (!section || !block) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const panel = drawer.current;
+    const copy = content.current;
+    if (!section || !panel || !copy) return;
+
     registerMotion();
+    const parts = Array.from(copy.querySelectorAll<HTMLElement>("[data-cta-part]"));
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduced) {
+      gsap.set(panel, { autoAlpha: 1, y: 0 });
+      gsap.set(parts, { autoAlpha: 1, y: 0 });
+      return;
+    }
+
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        block,
-        { scale: 0.72 },
-        {
-          scale: 1.08,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 80%",
-            end: "bottom bottom",
-            scrub: true,
-          },
+      gsap.set(panel, { autoAlpha: 0, y: 48 });
+      gsap.set(parts, { autoAlpha: 0, y: 18 });
+
+      const story = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 78%",
+          end: "top 42%",
+          scrub: 0.45,
+          invalidateOnRefresh: true,
         },
-      );
+      });
+
+      story.to(panel, { autoAlpha: 1, y: 0, duration: 0.55, ease: "none" }, 0);
+
+      parts.forEach((part, index) => {
+        story.to(
+          part,
+          { autoAlpha: 1, y: 0, duration: 0.22, ease: "none" },
+          0.28 + index * 0.04,
+        );
+      });
     }, section);
+
+    requestAnimationFrame(() => ScrollTrigger.refresh());
+
     return () => ctx.revert();
   }, []);
 
   return (
-    <section id={id} aria-labelledby={`${id}-title`} ref={root} className="relative overflow-hidden bg-charcoal text-white">
-      <div
-        ref={shape}
-        aria-hidden
-        className="pointer-events-none absolute -right-[10%] top-1/2 h-[140%] w-[46%] -translate-y-1/2 border border-rsi/80"
-      >
-        <div className="absolute inset-[12%] bg-rsi" />
-      </div>
-      <div className="shell relative grid gap-10 py-24 md:py-32 lg:grid-cols-12 lg:py-40">
-        <div className="lg:col-span-7">
-          <h2
-            id={`${id}-title`}
-            className="max-w-[12ch] font-display text-[clamp(2.8rem,6vw,5.4rem)] font-normal leading-[0.9] tracking-[-0.04em]"
-          >
-            {contact.title}
-          </h2>
-          <p className="type-body mt-6 max-w-xl font-body leading-relaxed text-white/80">
-            <span className="type-eyebrow mb-2 block tracking-[0.18em] text-white">
-              {contact.supportNote}
-            </span>
-            {contact.support}
-          </p>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/65">{contact.handoff}</p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            {secondary ? (
-              <Button href={secondary.href} variant="secondary" external={secondary.external}>
-                {secondary.label}
-              </Button>
-            ) : null}
-            <Button href={primary.href} external={primary.external} variant={secondary ? "light" : "primary"}>
-              {primary.label}
-            </Button>
+    <section
+      id={id}
+      ref={root}
+      aria-labelledby={`${id}-title`}
+      className="relative bg-white text-charcoal"
+    >
+      <div className={cn("shell w-full pb-20", padTop && "pt-20")}>
+        <div
+          ref={drawer}
+          className="relative w-full overflow-hidden will-change-transform"
+        >
+          <div ref={content} className="relative z-10 overflow-hidden px-6 py-[120px] text-white md:px-10">
+            <video
+              ref={video}
+              className="absolute -inset-px h-[calc(100%+2px)] w-[calc(100%+2px)] max-w-none object-cover object-center"
+              src={CTA_VIDEO_SRC}
+              muted
+              loop
+              playsInline
+              autoPlay
+              preload="auto"
+              aria-hidden
+              tabIndex={-1}
+            />
+            <div aria-hidden className="pointer-events-none absolute -inset-px bg-black/40" />
+
+            <div className="relative z-10 flex w-full flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
+              <div className="max-w-3xl text-left">
+                <h2
+                  id={`${id}-title`}
+                  data-cta-part
+                  className="font-display text-[clamp(1.9rem,4vw,3.25rem)] font-normal leading-[0.95] tracking-[-0.04em] [text-shadow:0_1px_18px_rgba(0,0,0,0.35)]"
+                >
+                  {contact.title}
+                </h2>
+                <p
+                  data-cta-part
+                  className="type-eyebrow mt-4 tracking-[0.18em] text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,0.3)]"
+                >
+                  {contact.supportNote}
+                </p>
+                <p
+                  data-cta-part
+                  className="type-body mt-3 w-full font-body leading-relaxed text-white/85 [text-shadow:0_1px_12px_rgba(0,0,0,0.28)]"
+                  style={{ fontSize: 14 }}
+                >
+                  {contact.support} {contact.handoff}
+                </p>
+              </div>
+              <div data-cta-part className="flex shrink-0 flex-col gap-3 sm:flex-row md:justify-end">
+                {secondary ? (
+                  <Button href={secondary.href} variant="secondary" external={secondary.external}>
+                    {secondary.label}
+                  </Button>
+                ) : null}
+                <Button href={primary.href} variant="primary" external={primary.external}>
+                  {primary.label}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

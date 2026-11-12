@@ -1,158 +1,373 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { nav } from "@/data/site-content";
 import { lenisRef } from "@/lib/lenis";
 import { cn } from "@/lib/cn";
 import { Logo } from "@/components/ui/Logo";
+import { AnimatedNavLink } from "@/components/navigation/AnimatedNavLink";
+import { MobileMenu } from "@/components/navigation/MobileMenu";
+import { ContactOverlay } from "@/components/navigation/ContactOverlay";
+import { usePageTransition } from "@/components/transitions/PageTransition";
+
+function sectionIdFromHref(href: string) {
+  if (!href.includes("#")) return null;
+  return href.split("#")[1] || null;
+}
+
+function parseRgba(color: string) {
+  const match = color.match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*([\d.]+))?/i);
+  if (!match) return null;
+  return {
+    r: Number(match[1]),
+    g: Number(match[2]),
+    b: Number(match[3]),
+    a: match[4] === undefined ? 1 : Number(match[4]),
+  };
+}
+
+function isLightBackground(color: string) {
+  const rgba = parseRgba(color);
+  if (!rgba || rgba.a < 0.2) return null;
+  const luminance = (0.2126 * rgba.r + 0.7152 * rgba.g + 0.0722 * rgba.b) / 255;
+  return luminance >= 0.72;
+}
+
+const LIGHT_SECTION_IDS = new Set(["about", "businesses", "projects", "services", "delivery"]);
+const HERO_SECTION_IDS = new Set(["top", "businesses-intro"]);
+
+function findSectionUnderHeader(): HTMLElement | null {
+  if (typeof document === "undefined") return null;
+  const samplePoints = [
+    Math.min(window.innerWidth - 12, Math.max(12, window.innerWidth * 0.2)),
+    Math.min(window.innerWidth - 12, Math.max(12, window.innerWidth * 0.5)),
+    Math.min(window.innerWidth - 12, Math.max(12, window.innerWidth * 0.8)),
+  ];
+  const y = 56;
+
+  for (const x of samplePoints) {
+    const stack = document.elementsFromPoint(x, y);
+    for (const node of stack) {
+      if (!(node instanceof HTMLElement)) continue;
+      if (node.closest("header") || node.closest('[role="dialog"]') || node.closest("#mobile-nav")) {
+        continue;
+      }
+      const section = node.closest("section[id]");
+      if (section instanceof HTMLElement && section.id) return section;
+    }
+  }
+
+  return null;
+}
+
+function sampleSurfaceTone(): "light" | "dark" {
+  if (typeof document === "undefined") return "dark";
+  const x = Math.min(window.innerWidth - 12, Math.max(12, window.innerWidth * 0.2));
+  const y = 56;
+  const stack = document.elementsFromPoint(x, y);
+
+  for (const node of stack) {
+    if (!(node instanceof HTMLElement)) continue;
+    if (node.closest("header") || node.closest('[role="dialog"]') || node.closest("#mobile-nav")) {
+      continue;
+    }
+
+    let current: HTMLElement | null = node;
+    while (current && current !== document.documentElement) {
+      const bg = getComputedStyle(current).backgroundColor;
+      const light = isLightBackground(bg);
+      if (light !== null) return light ? "light" : "dark";
+      current = current.parentElement;
+    }
+  }
+
+  return "dark";
+}
+
+function resolveHeaderSurface(): HeaderSurface {
+  const forced = document.documentElement.dataset.headerTone;
+  if (forced === "hero" || forced === "light" || forced === "dark") return forced;
+
+  const section = findSectionUnderHeader();
+  if (section) {
+    if (HERO_SECTION_IDS.has(section.id)) return "hero";
+    if (LIGHT_SECTION_IDS.has(section.id)) return "light";
+    return "dark";
+  }
+  return sampleSurfaceTone() === "light" ? "light" : "dark";
+}
+
+type HeaderSurface = "hero" | "light" | "dark";
 
 export function Header() {
   const pathname = usePathname();
-  const [menuPath, setMenuPath] = useState<string | null>(null);
-  const [overHero, setOverHero] = useState(true);
-  const open = menuPath === pathname;
-  const panelRef = useRef<HTMLDivElement>(null);
+  const transition = usePageTransition();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const [surface, setSurface] = useState<HeaderSurface>("hero");
+  const [activeHash, setActiveHash] = useState<string | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const contactCloseRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
-    const id = pathname.startsWith("/businesses") ? "businesses-intro" : "top";
-    const hero = document.getElementById(id);
-    if (!hero) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setOverHero(Boolean(entry?.isIntersecting && entry.intersectionRatio > 0.12));
-      },
-      { threshold: [0, 0.12, 0.35] },
-    );
-    observer.observe(hero);
-    return () => observer.disconnect();
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      if (menuOpen || contactOpen) {
+        setSurface("hero");
+        return;
+      }
+      setSurface(resolveHeaderSurface());
+    };
+    const schedule = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    window.addEventListener("rsi-header-tone", schedule);
+    document.addEventListener("scroll", schedule, { passive: true, capture: true });
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("rsi-header-tone", schedule);
+      document.removeEventListener("scroll", schedule, true);
+    };
+  }, [pathname, menuOpen, contactOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    if (!open) return;
-    const panel = panelRef.current;
-    lenisRef.current?.stop();
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const focusables = panel
-      ? Array.from(panel.querySelectorAll<HTMLElement>("a, button"))
-      : [];
-    const closeButton = buttonRef.current;
-    const frame = window.requestAnimationFrame(() => focusables[0]?.focus());
+    if (pathname !== "/") {
+      setActiveHash(null);
+      return;
+    }
 
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setMenuPath(null);
+    const syncHash = () => {
+      const hash = window.location.hash.replace("#", "") || null;
+      setActiveHash(hash === "top" ? null : hash);
+    };
+    syncHash();
+
+    const sectionIds = ["about", "projects", "contact", "capabilities", "businesses"];
+    const elements = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => Boolean(el));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]?.target?.id) {
+          const id = visible[0].target.id;
+          if (id === "about" || id === "projects" || id === "contact") {
+            setActiveHash(id);
+          }
+        }
+      },
+      { rootMargin: "-30% 0px -55% 0px", threshold: [0.1, 0.25, 0.5] },
+    );
+
+    elements.forEach((el) => observer.observe(el));
+    window.addEventListener("hashchange", syncHash);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("hashchange", syncHash);
+    };
+  }, [pathname]);
+
+  const isActive = useCallback(
+    (href: string, opensContact?: boolean) => {
+      if (contactOpen) return Boolean(opensContact);
+      if (opensContact) return false;
+      if (href === "/") return pathname === "/" && !activeHash;
+      if (href === "/businesses") return pathname.startsWith("/businesses");
+      const section = sectionIdFromHref(href);
+      if (section) return pathname === "/" && activeHash === section;
+      return false;
+    },
+    [activeHash, contactOpen, pathname],
+  );
+
+  const scrollToHash = useCallback((href: string) => {
+    const id = sectionIdFromHref(href);
+    if (!id) {
+      if (lenisRef.current) lenisRef.current.scrollTo(0);
+      else window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (lenisRef.current) lenisRef.current.scrollTo(el);
+    else el.scrollIntoView({ behavior: "smooth" });
+    window.history.replaceState(null, "", `/#${id}`);
+    setActiveHash(id);
+  }, []);
+
+  const handleNavigate = useCallback(
+    (href: string, event: React.MouseEvent<HTMLAnchorElement>) => {
+      const item = nav.find((entry) => entry.href === href);
+      if (item && "opensContact" in item && item.opensContact) {
+        event.preventDefault();
+        setMenuOpen(false);
+        setContactOpen(true);
         return;
       }
-      if (event.key !== "Tab" || focusables.length === 0) return;
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+
+      const path = href.split("#")[0] || "/";
+      const hasHash = href.includes("#");
+      const cinematic =
+        (pathname === "/" && path.startsWith("/businesses")) ||
+        (pathname.startsWith("/businesses") && (path === "/" || path === ""));
+
+      if (cinematic && transition) {
         event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
+        setMenuOpen(false);
+        setContactOpen(false);
+        transition.navigate(href);
+        return;
       }
-    };
 
-    document.addEventListener("keydown", onKey);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = previousOverflow;
-      lenisRef.current?.start();
-      closeButton?.focus();
-    };
-  }, [open]);
+      if (pathname === "/" && (href === "/" || hasHash)) {
+        event.preventDefault();
+        setMenuOpen(false);
+        setContactOpen(false);
+        if (href === "/") {
+          scrollToHash("/");
+          window.history.replaceState(null, "", "/");
+          setActiveHash(null);
+        } else {
+          scrollToHash(href);
+        }
+        return;
+      }
 
-  const solid = !overHero && !open;
+      if (pathname.startsWith("/businesses") && hasHash && path === "/") {
+        setContactOpen(false);
+        setMenuOpen(false);
+        return;
+      }
+
+      setContactOpen(false);
+    },
+    [pathname, scrollToHash, transition],
+  );
+
+  const openContact = useCallback(() => {
+    setMenuOpen(false);
+    setContactOpen(true);
+  }, []);
+
+  const closeContact = useCallback(() => setContactOpen(false), []);
+
+  const onLight = surface === "light" && !menuOpen && !contactOpen;
+
+  const mobileItems = useMemo(
+    () =>
+      nav.map((item) => ({
+        href: item.href,
+        label: item.label,
+        opensContact: "opensContact" in item && item.opensContact,
+      })),
+    [],
+  );
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        open && "bg-charcoal text-white",
-        !open && solid && "border-b border-charcoal/10 bg-paper/95 text-charcoal backdrop-blur-md",
-        !open && !solid && "bg-transparent text-white",
-      )}
-    >
-      <div className="shell flex h-16 items-center justify-between md:h-[4.5rem]">
-        <Link href="/#top" aria-label="Red Sea International, home" className="relative z-[60]">
-          <Logo />
-        </Link>
-        <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
-          {nav.map((item) => {
-            const current = item.href === "/businesses" && pathname.startsWith("/businesses");
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={current ? "page" : undefined}
-                className="text-[0.74rem] font-semibold uppercase tracking-[0.16em]"
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-        <button
-          ref={buttonRef}
-          type="button"
-          className="relative z-[60] inline-flex h-11 w-11 items-center justify-center md:hidden"
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          aria-label={open ? "Close menu" : "Open menu"}
-          onClick={() => setMenuPath((current) => (current === pathname ? null : pathname))}
-        >
-          <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
-          <span aria-hidden className="relative block h-3 w-6">
-            <span
-              className={cn(
-                "absolute left-0 h-px w-6 bg-current transition-transform",
-                open ? "top-1.5 rotate-45" : "top-0",
-              )}
-            />
-            <span
-              className={cn(
-                "absolute left-0 top-1.5 h-px w-6 bg-current transition-opacity",
-                open && "opacity-0",
-              )}
-            />
-            <span
-              className={cn(
-                "absolute left-0 h-px w-6 bg-current transition-transform",
-                open ? "top-1.5 -rotate-45" : "top-3",
-              )}
-            />
-          </span>
-        </button>
-      </div>
-      <div
-        id="mobile-nav"
-        ref={panelRef}
-        inert={open ? undefined : true}
+    <>
+      <header
         className={cn(
-          "fixed inset-0 z-40 bg-charcoal text-white transition-opacity duration-300 md:hidden",
-          open ? "opacity-100" : "pointer-events-none opacity-0",
+          "fixed inset-x-0 top-0 z-50 transition-[background-color,color,backdrop-filter,box-shadow] duration-300",
+          (menuOpen || contactOpen || surface === "hero") && "bg-transparent text-white",
+          !menuOpen &&
+            !contactOpen &&
+            surface === "light" &&
+            "bg-white text-charcoal shadow-[0_1px_0_rgba(22,22,22,0.08)]",
+          !menuOpen &&
+            !contactOpen &&
+            surface === "dark" &&
+            "bg-[#171717]/80 text-white shadow-[0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md",
         )}
       >
-        <nav aria-label="Mobile" className="flex h-full flex-col justify-center gap-2 px-6 pt-16">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMenuPath(null)}
-              className="border-b border-white/15 py-4 font-display text-[clamp(2.4rem,12vw,3.5rem)] font-normal leading-none tracking-[-0.03em]"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-    </header>
+        <div className="flex h-20 items-center justify-between px-[clamp(24px,4vw,80px)]">
+          <Link
+            href="/#top"
+            aria-label="Red Sea International, home"
+            className="relative z-[60]"
+            onClick={(event) => handleNavigate("/", event)}
+          >
+            <Logo />
+          </Link>
+
+          <nav
+            aria-label="Primary"
+            className={cn(
+              "hidden items-center gap-9 md:flex",
+              contactOpen && "pointer-events-none opacity-0",
+            )}
+            aria-hidden={contactOpen || undefined}
+          >
+            {nav.map((item) => {
+              const opensContact = "opensContact" in item && item.opensContact;
+              return (
+                <AnimatedNavLink
+                  key={item.href}
+                  href={item.href}
+                  label={item.label}
+                  active={isActive(item.href, opensContact)}
+                  tone={onLight ? "light" : "dark"}
+                  onNavigate={handleNavigate}
+                />
+              );
+            })}
+          </nav>
+
+          <button
+            ref={buttonRef}
+            type="button"
+            className={cn(
+              "relative z-[60] inline-flex h-11 min-w-11 items-center justify-center text-[0.72rem] font-medium uppercase tracking-[0.16em]",
+              onLight ? "text-charcoal" : "text-white",
+              !contactOpen && "md:hidden",
+            )}
+            aria-expanded={contactOpen ? true : menuOpen}
+            aria-controls={contactOpen ? undefined : "mobile-nav"}
+            aria-label={contactOpen || menuOpen ? "Close" : "Open menu"}
+            onClick={() => {
+              if (contactOpen) {
+                if (contactCloseRef.current) contactCloseRef.current();
+                else closeContact();
+                return;
+              }
+              setMenuOpen((current) => !current);
+            }}
+          >
+            {contactOpen || menuOpen ? "Close" : "Menu"}
+          </button>
+        </div>
+
+        <MobileMenu
+          open={menuOpen}
+          items={mobileItems}
+          onClose={() => setMenuOpen(false)}
+          onContact={openContact}
+          onNavigate={handleNavigate}
+        />
+      </header>
+
+      <ContactOverlay
+        open={contactOpen}
+        onClose={closeContact}
+        registerClose={contactCloseRef}
+      />
+    </>
   );
 }

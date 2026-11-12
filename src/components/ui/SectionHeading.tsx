@@ -1,6 +1,5 @@
 import { cn } from "@/lib/cn";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { RevealText } from "@/components/motion/RevealText";
 
 export function SectionHeading({
   eyebrow,
@@ -22,24 +21,29 @@ export function SectionHeading({
   const Tag = as;
 
   return (
-    <div className={cn("max-w-4xl", className)}>
-      {eyebrow ? <Eyebrow light={light}>{eyebrow}</Eyebrow> : null}
+    <div className={cn("flex w-full flex-col gap-[6px]", className)}>
+      {eyebrow ? (
+        <Eyebrow light={light} rule={false}>
+          {eyebrow}
+        </Eyebrow>
+      ) : null}
       <Tag
         id={titleId}
         className={cn(
-          "font-display text-[clamp(2.5rem,5.2vw,4.8rem)] font-normal leading-[0.92] tracking-[-0.035em]",
-          eyebrow && "mt-4",
+          "hero-headline w-full font-display font-normal",
           light ? "text-white" : "text-charcoal",
         )}
+        style={{ fontSize: 52, marginTop: 0, marginBottom: 0 }}
       >
-        <RevealText>{title}</RevealText>
+        {title}
       </Tag>
       {children ? (
         <div
           className={cn(
-            "type-body mt-6 max-w-2xl font-body leading-[1.65]",
+            "type-body w-full font-body leading-relaxed",
             light ? "text-white/80" : "text-graphite",
           )}
+          style={{ fontSize: 14, marginTop: 0, marginBottom: 0 }}
         >
           {children}
         </div>

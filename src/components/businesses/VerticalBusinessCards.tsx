@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { businesses, businessesPage } from "@/data/site-content";
 import { AssetFrame } from "@/components/ui/AssetFrame";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 
 export function VerticalBusinessCards() {
@@ -58,31 +58,25 @@ export function VerticalBusinessCards() {
                     onFocus={() => activate(business.id)}
                     className={cn(
                       "z-10 flex w-full text-left",
-                      open ? "relative items-start gap-4 p-5 md:p-6" : "absolute inset-0 items-end p-5 lg:items-center lg:justify-end lg:p-6",
+                      open
+                        ? "relative mt-auto items-end gap-4 p-5 md:p-6"
+                        : "absolute inset-0 items-end justify-start p-5 lg:p-6",
                     )}
                   >
                     <span
                       className={cn(
-                        "flex gap-3",
-                        !open && "lg:h-full lg:flex-col lg:items-center lg:justify-between",
+                        "font-display text-[clamp(1.7rem,2.1vw,2.6rem)] font-normal leading-[0.95] tracking-[-0.03em]",
+                        !open && "lg:[writing-mode:vertical-rl] lg:rotate-180",
                       )}
                     >
-                      <span className="text-xs tracking-[0.18em] text-white/75">{business.number}</span>
-                      <span
-                        className={cn(
-                          "font-display text-[clamp(1.7rem,2.1vw,2.6rem)] font-normal leading-[0.95] tracking-[-0.03em]",
-                          !open && "lg:[writing-mode:vertical-rl]",
-                        )}
-                      >
-                        {business.title}
-                      </span>
+                      {business.title}
                     </span>
                   </button>
                   <div
                     id={`${business.id}-details`}
                     inert={open ? undefined : true}
                     className={cn(
-                      "mt-auto grid transition-[grid-template-rows,opacity] duration-500",
+                      "grid transition-[grid-template-rows,opacity] duration-500",
                       open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
                     )}
                   >
@@ -99,12 +93,9 @@ export function VerticalBusinessCards() {
                             </li>
                           ))}
                         </ul>
-                        <Link
-                          href={`#${business.serviceAnchor}`}
-                          className="inline-flex min-h-11 items-center self-start border border-white px-4 text-[0.72rem] font-semibold uppercase tracking-[0.16em] hover:bg-white hover:text-charcoal"
-                        >
+                        <Button href={`#${business.serviceAnchor}`} variant="primary" className="self-start">
                           {businessesPage.exploreLabel}
-                        </Link>
+                        </Button>
                       </div>
                     </div>
                   </div>

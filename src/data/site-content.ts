@@ -21,10 +21,9 @@ export const brandStatement =
   "From modular buildings and workforce accommodation to integrated facilities management, catering and infrastructure services, Red Sea International brings together complementary capabilities to deliver and operate the places where people live and work.";
 
 export const nav = [
-  { href: "/#about", label: "About RSI" },
+  { href: "/", label: "Home" },
   { href: "/businesses", label: "Our Businesses" },
-  { href: "/#projects", label: "Projects" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/#contact", label: "Contact", opensContact: true },
 ] as const;
 
 export const hero = {
@@ -61,7 +60,7 @@ export const about = {
 export const capabilities = {
   /** Editorial display heading. Facts live in the four pillars. */
   eyebrow: "Capabilities",
-  title: "Connected Capabilities. One Delivery Vision.",
+  title: ["Connected Capabilities.", "One Delivery Vision."] as const,
   editorial: true,
   pillars: [
     {
@@ -166,22 +165,26 @@ export const projectsSection = {
   items: [
     {
       title: "Webuild — Trojena",
-      description: "Workforce accommodation and support services.",
+      description:
+        "Workforce accommodation and support services, including catering, housekeeping, laundry, security, recreation and facilities maintenance.",
       asset: "trojena" as AssetId,
     },
     {
       title: "Ma’aden — Turaif",
-      description: "Camp operations.",
+      description:
+        "Accommodation operations supporting employees and contractors, including housekeeping, maintenance, landscaping and site services.",
       asset: "turaif" as AssetId,
     },
     {
       title: "Baker Hughes — Rig Camps",
-      description: "Rig camp supply and operations.",
+      description:
+        "Modular rig camp facilities and operational support for drilling-related activities across Saudi Arabia.",
       asset: "rig" as AssetId,
     },
     {
       title: "Red Sea Global — Construction Village",
-      description: "Integrated accommodation and operations.",
+      description:
+        "Integrated workforce accommodation and operations, including housekeeping, laundry, maintenance and site support services.",
       asset: "village" as AssetId,
     },
   ],
@@ -259,7 +262,9 @@ export const businessesPage = {
   },
   delivery: {
     title: "Connected Expertise Across the Facility Lifecycle",
-    body: "From modular manufacturing and project construction to catering, maintenance and site operations, RSI’s business areas can collaborate to address requirements that span multiple disciplines. Engagement models are tailored to each client, location and scope.",
+    body: "From modular manufacturing and project construction to catering, maintenance and site operations, RSI’s business areas can collaborate to address requirements that span multiple disciplines.",
+    bodySecondary:
+      "Engagement models are tailored to each client, location and scope.",
     phases: ["Design", "Build", "Operate", "Maintain"],
     metaphor:
       "Visual metaphor only. It does not indicate that RSI supplies every phase on every contract.",

@@ -70,14 +70,19 @@ export function Capabilities() {
     <ScrollScene id="capabilities" ref={root} className="bg-charcoal text-white">
       <div ref={pin} className="pin-layout hidden lg:block">
         <div className="grid h-[100svh] grid-cols-12">
-          <div className="col-span-5 flex min-h-0 flex-col justify-between overflow-y-auto px-10 py-28 xl:px-14">
-            <div>
-              <Eyebrow light>{capabilities.eyebrow}</Eyebrow>
+          <div className="col-span-6 flex min-h-0 flex-col justify-between overflow-y-auto py-28 pl-[var(--shell-gutter)] pr-10 xl:pr-14">
+            <div className="flex flex-col gap-[6px]">
+              <Eyebrow light rule={false}>
+                {capabilities.eyebrow}
+              </Eyebrow>
               <h2
                 id="capabilities-title"
-                className="mt-4 max-w-[12ch] font-display text-[clamp(2.1rem,3.4vw,3.6rem)] font-normal leading-[0.92] tracking-[-0.035em]"
+                className="hero-headline font-display font-normal"
+                style={{ fontSize: 52, marginTop: 0, marginBottom: 0 }}
               >
-                {capabilities.title}
+                {capabilities.title[0]}
+                <br />
+                {capabilities.title[1]}
               </h2>
             </div>
             <ul
@@ -102,7 +107,7 @@ export function Capabilities() {
                     aria-pressed={active}
                     onClick={() => select(pillarIndex)}
                     className={cn(
-                      "flex w-full gap-4 border-t border-white/15 py-4 text-left",
+                      "flex w-full gap-4 border-t border-white/15 py-[20px] text-left",
                       active ? "text-white" : "text-white/75",
                     )}
                   >
@@ -125,17 +130,22 @@ export function Capabilities() {
               <span ref={bar} className="block h-px origin-left scale-x-0 bg-rsi" />
             </div>
           </div>
-          <div ref={panels} className="relative col-span-7 overflow-hidden">
+          <div ref={panels} className="relative col-span-6 overflow-hidden">
             {capabilities.pillars.map((pillar, pillarIndex) => (
               <div
                 key={pillar.title}
                 data-panel
                 className={cn(
-                  "absolute inset-0",
+                  "absolute inset-0 h-full w-full",
                   !enhanced && pillarIndex !== index && "opacity-0",
                 )}
               >
-                <AssetFrame id={pillar.asset} sizes="58vw" />
+                <AssetFrame
+                  id={pillar.asset}
+                  sizes="(min-width: 1024px) 58vw, 100vw"
+                  className="absolute inset-0 h-full w-full"
+                  priority={pillarIndex === 0}
+                />
               </div>
             ))}
           </div>
@@ -143,10 +153,19 @@ export function Capabilities() {
       </div>
 
       <div className="flow-layout shell py-24 md:py-32 lg:hidden">
-        <Eyebrow light>{capabilities.eyebrow}</Eyebrow>
-        <h2 className="mt-4 max-w-[14ch] font-display text-[clamp(2.5rem,8vw,4.5rem)] font-normal leading-[0.92] tracking-[-0.035em]">
-          {capabilities.title}
-        </h2>
+        <div className="flex flex-col gap-[6px]">
+          <Eyebrow light rule={false}>
+            {capabilities.eyebrow}
+          </Eyebrow>
+          <h2
+            className="hero-headline font-display font-normal"
+            style={{ fontSize: 52, marginTop: 0, marginBottom: 0 }}
+          >
+            {capabilities.title[0]}
+            <br />
+            {capabilities.title[1]}
+          </h2>
+        </div>
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           {capabilities.pillars.map((pillar, pillarIndex) => (
             <article key={pillar.title} className="border border-white/15">

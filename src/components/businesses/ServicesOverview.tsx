@@ -86,7 +86,7 @@ export function ServicesOverview() {
 
   return (
     <section id="services" aria-labelledby="services-title" className="bg-paper">
-      <div className="shell py-24 md:py-32 lg:py-40">
+      <div className="shell pb-28 pt-24 md:pt-32 lg:pt-40">
         <SectionHeading
           eyebrow={businessesPage.services.eyebrow}
           title={businessesPage.services.title}
