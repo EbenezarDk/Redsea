@@ -10,7 +10,7 @@ export function BusinessPreview() {
       labelledBy="businesses-title"
       className="relative flex flex-col bg-charcoal text-white"
     >
-      <div className="shell section-pad flex flex-col">
+      <div className="shell section-pad-top flex flex-col">
         <div className="shrink-0 pb-3 md:pb-4">
           <div className="flex max-w-4xl flex-col gap-[6px]">
             <Eyebrow light rule={false}>
