@@ -86,6 +86,13 @@ body {
   overflow-x: clip;
 }
 
+/* Hero intro: hard-lock native scroll while the opening clip plays */
+html[data-hero-intro="1"],
+html[data-hero-intro="1"] body {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
 .shell {
   width: min(1440px, calc(100% - (var(--shell-gutter) * 2)));
   max-width: 1440px;
