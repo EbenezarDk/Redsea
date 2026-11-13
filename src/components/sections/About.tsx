@@ -6,8 +6,8 @@ import { ScrollScene } from "@/components/motion/ScrollScene";
 export function About() {
   return (
     <ScrollScene id="about" labelledBy="about-title" className="bg-paper">
-      <div className="shell grid gap-12 py-20 md:py-28 lg:grid-cols-12 lg:gap-16 lg:py-32">
-        <div className="lg:col-span-5">
+      <div className="shell grid items-stretch gap-12 py-20 md:py-28 lg:grid-cols-12 lg:gap-16 lg:py-32">
+        <div className="flex flex-col lg:col-span-5">
           <div className="flex flex-col gap-[6px]">
             <Eyebrow rule={false}>{about.eyebrow}</Eyebrow>
             <h2
@@ -30,29 +30,18 @@ export function About() {
               {about.support}
             </p>
           </div>
+
           <div className="mt-8">
             <Button href={about.cta.href} variant="primary">
               {about.cta.label}
             </Button>
           </div>
-        </div>
-        <div className="lg:col-span-7">
-          <div className="relative aspect-[4/5] w-full overflow-hidden bg-charcoal sm:aspect-[16/10]">
-            <iframe
-              title="Red Sea International — About"
-              src={`https://www.youtube.com/embed/${about.videoId}?rel=0&modestbranding=1`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="strict-origin-when-cross-origin"
-              className="absolute inset-0 h-full w-full border-0"
-            />
-          </div>
+
           <ul className="mt-10 grid grid-cols-1 divide-y divide-charcoal/15 border-y border-charcoal/15 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
             {about.stats.map((stat) => (
               <li
                 key={stat.full}
-                className="flex flex-col gap-2 px-0 py-6 sm:px-6 sm:first:pl-0 sm:last:pr-0"
+                className="flex flex-col gap-2 px-0 py-5 sm:px-4 sm:first:pl-0 sm:last:pr-0 lg:px-3"
               >
                 <span className="sr-only">{stat.full}</span>
                 <span
@@ -67,6 +56,20 @@ export function About() {
               </li>
             ))}
           </ul>
+        </div>
+
+        <div className="lg:col-span-7">
+          <div className="relative aspect-[16/10] w-full overflow-hidden bg-charcoal lg:aspect-auto lg:h-full lg:min-h-[28rem]">
+            <iframe
+              title="Red Sea International — About"
+              src={`https://www.youtube.com/embed/${about.videoId}?rel=0&modestbranding=1`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+              className="absolute inset-0 h-full w-full border-0"
+            />
+          </div>
         </div>
       </div>
     </ScrollScene>
