@@ -10,7 +10,8 @@ import { cn } from "@/lib/cn";
 /** Original upload is preserved. Settled frame matches the lit modular floor behind hero copy. */
 const HERO_VIDEO_SRC = "/videos/hero-approach-scrub.mp4";
 const SETTLE_RATIO = 3.35 / 7.85;
-const INTRO_PLAY_MS = 3000;
+const INTRO_PLAY_MS = 2000;
+const INTRO_PLAYBACK_RATE = 2;
 
 function setHeaderTone(tone: "hero" | null) {
   const root = document.documentElement;
@@ -93,6 +94,7 @@ export function Hero() {
     const finishIntro = () => {
       if (cancelled) return;
       video.pause();
+      video.playbackRate = 1;
       seekSettle();
       setShowCopy(true);
       // Brief beat so copy can paint before scroll unlocks.
@@ -107,6 +109,7 @@ export function Hero() {
       if (cancelled) return;
       lockScroll();
       video.currentTime = 0;
+      video.playbackRate = INTRO_PLAYBACK_RATE;
       const play = video.play();
       if (play && typeof play.catch === "function") {
         play.catch(() => {
