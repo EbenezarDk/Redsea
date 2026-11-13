@@ -279,7 +279,7 @@ export function Newsroom() {
         aria-labelledby="newsroom-title"
         className="relative bg-paper text-charcoal"
       >
-        <div className="shell py-16 md:py-20 lg:py-24">
+        <div className="shell section-pad">
           <div className="flex max-w-3xl shrink-0 flex-col gap-[6px]">
             <div data-news-eyebrow>
               <Eyebrow rule={false}>{rsiNewsSection.eyebrow}</Eyebrow>

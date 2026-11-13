@@ -64,7 +64,7 @@ export function VerticalBusinessCards() {
       aria-label="Five businesses"
       className="bg-paper text-charcoal"
     >
-      <div className="shell py-12 md:py-16 lg:py-20">
+      <div className="shell section-pad">
         <div className="flex flex-col">
           {businesses.map((business, index) => {
             const imageLeft = index % 2 === 0;

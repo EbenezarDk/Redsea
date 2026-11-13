@@ -6,7 +6,7 @@ import { ScrollScene } from "@/components/motion/ScrollScene";
 export function About() {
   return (
     <ScrollScene id="about" labelledBy="about-title" className="bg-paper">
-      <div className="shell grid items-stretch gap-12 py-20 md:py-28 lg:grid-cols-12 lg:gap-16 lg:py-32">
+      <div className="shell section-pad grid items-stretch gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="flex flex-col lg:col-span-5">
           <div className="flex flex-col gap-[6px]">
             <Eyebrow rule={false}>{about.eyebrow}</Eyebrow>

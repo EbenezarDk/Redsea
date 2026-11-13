@@ -18,7 +18,6 @@ export function CTA({
   id = "contact",
   primary,
   secondary,
-  padTop = false,
   title = contact.title,
   supportNote = contact.supportNote,
   support = `${contact.support} ${contact.handoff}`,
@@ -27,8 +26,6 @@ export function CTA({
   id?: string;
   primary: Action;
   secondary?: Action;
-  /** Match bottom padding on top — used on /businesses */
-  padTop?: boolean;
   title?: string;
   supportNote?: string;
   support?: string;
@@ -112,7 +109,7 @@ export function CTA({
       aria-labelledby={`${id}-title`}
       className="relative bg-white text-charcoal"
     >
-      <div className={cn("shell w-full pb-20", padTop && "pt-20")}>
+      <div className="shell section-pad w-full">
         <div
           ref={drawer}
           className="relative w-full overflow-hidden will-change-transform"

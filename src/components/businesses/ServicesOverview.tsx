@@ -58,7 +58,7 @@ export function ServicesOverview() {
   return (
     <section id="services" aria-labelledby="services-title" className="bg-white text-charcoal">
       <InViewReveal>
-      <div className="shell py-16 md:py-20 lg:py-24">
+      <div className="shell section-pad">
         <div className="border-b border-charcoal/15 pb-5">
           <p className="type-eyebrow font-body text-[#3f3d3a]">{businessesPage.services.eyebrow}</p>
           <h2

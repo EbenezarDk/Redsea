@@ -35,7 +35,6 @@ export default function HomePage() {
       <Newsroom />
       <QuickLinks />
       <CTA
-        padTop
         primary={{
           label: contact.homeLabel,
           href: officialContactUrl,

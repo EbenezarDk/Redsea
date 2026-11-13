@@ -20,7 +20,7 @@ export function ProjectProof() {
 
   return (
     <ScrollScene id="projects" labelledBy="projects-title" className="bg-white text-charcoal">
-      <div className="shell py-16 md:py-20 lg:py-24">
+      <div className="shell section-pad">
         <div className="flex w-full flex-col gap-[6px]">
           <Eyebrow rule={false}>{projectProofCopy.eyebrow}</Eyebrow>
           <h2

@@ -25,7 +25,6 @@ export default function BusinessesPage() {
       <ServicesOverview />
       <IntegratedDelivery />
       <CTA
-        padTop
         title={contact.businesses.title}
         support={contact.businesses.support}
         showSupportNote={false}

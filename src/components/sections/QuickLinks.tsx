@@ -149,7 +149,7 @@ export function QuickLinks() {
       className="h-auto bg-[#171717] text-white"
     >
       <InViewReveal>
-        <div className="shell py-16 md:py-20 lg:py-24">
+        <div className="shell section-pad">
           <SectionHeading light title="Quick Links" titleId="quick-links-title" />
 
           <div className="mt-10 grid grid-cols-2 lg:mt-12 lg:grid-cols-4">

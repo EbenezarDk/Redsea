@@ -6,7 +6,7 @@ import { ScrollScene } from "@/components/motion/ScrollScene";
 export function Capabilities() {
   return (
     <ScrollScene id="capabilities" labelledBy="capabilities-title" className="bg-white">
-      <div className="shell py-16 md:py-20 lg:py-24">
+      <div className="shell section-pad">
         <div className="flex max-w-4xl flex-col gap-[6px]">
           <Eyebrow rule={false}>{capabilities.eyebrow}</Eyebrow>
           <h2

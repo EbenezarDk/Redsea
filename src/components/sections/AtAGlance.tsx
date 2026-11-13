@@ -49,7 +49,7 @@ export function AtAGlance() {
       labelledBy="at-a-glance-title"
       className="bg-paper text-charcoal"
     >
-      <div className="shell flex flex-col gap-10 py-16 md:py-20 lg:gap-12 lg:py-24">
+      <div className="shell section-pad flex flex-col gap-10 lg:gap-12">
         <div className="flex w-full flex-col gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
           <div className="flex w-full max-w-3xl flex-col gap-[6px] lg:flex-1">
             <Eyebrow rule={false}>{atAGlanceCopy.eyebrow}</Eyebrow>

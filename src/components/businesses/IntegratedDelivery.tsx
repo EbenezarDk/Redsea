@@ -61,7 +61,7 @@ export function IntegratedDelivery() {
   return (
     <section ref={root} id="delivery" aria-labelledby="delivery-title" className="blueprint">
       <InViewReveal>
-        <div className="shell py-20">
+        <div className="shell section-pad">
           <SectionHeading title={businessesPage.delivery.title} titleId="delivery-title">
             <span className="block">{businessesPage.delivery.body}</span>
             <span className="mt-[6px] block">{businessesPage.delivery.bodySecondary}</span>

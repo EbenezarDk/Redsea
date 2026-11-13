@@ -92,6 +92,23 @@ body {
   margin-inline: auto;
 }
 
+/* Shared vertical rhythm for content sections */
+.section-pad {
+  padding-block: 4rem;
+}
+
+@media (min-width: 768px) {
+  .section-pad {
+    padding-block: 5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-pad {
+    padding-block: 6rem;
+  }
+}
+
 /* Soft section enter — used by InViewReveal / ScrollScene */
 .reveal-on-view {
   opacity: 0;

@@ -16,7 +16,7 @@ export function Footer() {
   return (
     <footer className="overflow-hidden bg-[#101010] text-white">
       <InViewReveal>
-        <div className="shell grid gap-12 py-16 md:py-20 lg:grid-cols-12">
+        <div className="shell section-pad grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-6">
             <Logo imageClassName="h-[80px]" />
             <p className="type-body mt-6 max-w-xl font-body leading-relaxed text-white/75">{brandStatement}</p>
