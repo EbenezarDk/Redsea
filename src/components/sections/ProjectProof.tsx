@@ -40,7 +40,7 @@ export function ProjectProof() {
 
         <ul className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4 lg:gap-4 xl:gap-5">
           {rsiProjects.map((project) => (
-            <li key={project.id} className="flex h-full flex-col border border-charcoal/15 bg-white">
+            <li key={project.id} className="reveal-item flex h-full flex-col border border-charcoal/15 bg-white">
               <div className="relative aspect-[16/11] w-full overflow-hidden border-b border-charcoal/10">
                 <AssetFrame id={project.asset} sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 100vw" />
               </div>

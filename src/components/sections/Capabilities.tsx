@@ -22,7 +22,7 @@ export function Capabilities() {
           {capabilities.pillars.map((pillar, pillarIndex) => (
             <article
               key={pillar.title}
-              className="group flex h-full flex-col border-b border-charcoal/15 bg-white p-6 text-charcoal outline-none transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] last:border-b-0 hover:bg-rsi hover:text-white sm:odd:border-r sm:[&:nth-child(n+3)]:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0"
+              className="reveal-item group flex h-full flex-col border-b border-charcoal/15 bg-white p-6 text-charcoal outline-none transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] last:border-b-0 hover:bg-rsi hover:text-white sm:odd:border-r sm:[&:nth-child(n+3)]:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0"
             >
               <CapabilityIcon index={pillarIndex} />
               <h3 className="mt-3 font-display text-[1.65rem] font-normal leading-[1.05] tracking-[-0.03em] transition-colors duration-500 md:text-[1.85rem]">

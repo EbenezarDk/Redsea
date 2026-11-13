@@ -9,6 +9,7 @@ import {
   ArrowUpRight,
   type LucideIcon,
 } from "lucide-react";
+import { InViewReveal } from "@/components/motion/InViewReveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { cn } from "@/lib/cn";
 import { gsap } from "@/lib/motion";
@@ -147,25 +148,27 @@ export function QuickLinks() {
       aria-labelledby="quick-links-title"
       className="h-auto bg-[#171717] text-white"
     >
-      <div className="shell py-16 md:py-20 lg:py-24">
-        <SectionHeading light title="Quick Links" titleId="quick-links-title" />
+      <InViewReveal>
+        <div className="shell py-16 md:py-20 lg:py-24">
+          <SectionHeading light title="Quick Links" titleId="quick-links-title" />
 
-        <div className="mt-10 grid grid-cols-2 lg:mt-12 lg:grid-cols-4">
-          {LINKS.map((link, index) => (
-            <QuickLinkCard
-              key={link.id}
-              title={link.title}
-              Icon={link.Icon}
-              className={cn(
-                "border-white/10",
-                index % 2 === 0 && "border-r",
-                index < 2 && "border-b lg:border-b-0",
-                index !== 3 && "lg:border-r",
-              )}
-            />
-          ))}
+          <div className="mt-10 grid grid-cols-2 lg:mt-12 lg:grid-cols-4">
+            {LINKS.map((link, index) => (
+              <QuickLinkCard
+                key={link.id}
+                title={link.title}
+                Icon={link.Icon}
+                className={cn(
+                  "reveal-item border-white/10",
+                  index % 2 === 0 && "border-r",
+                  index < 2 && "border-b lg:border-b-0",
+                  index !== 3 && "lg:border-r",
+                )}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      </InViewReveal>
     </section>
   );
 }

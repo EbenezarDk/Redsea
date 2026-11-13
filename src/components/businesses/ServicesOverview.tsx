@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { businesses, businessesPage } from "@/data/site-content";
 import { InteractiveServiceIcon } from "@/components/businesses/ServiceIcons";
+import { InViewReveal } from "@/components/motion/InViewReveal";
 import { cn } from "@/lib/cn";
 
 const groups = businessesPage.services.groups;
@@ -56,6 +57,7 @@ export function ServicesOverview() {
 
   return (
     <section id="services" aria-labelledby="services-title" className="bg-white text-charcoal">
+      <InViewReveal>
       <div className="shell py-16 md:py-20 lg:py-24">
         <div className="border-b border-charcoal/15 pb-5">
           <p className="type-eyebrow font-body text-[#3f3d3a]">{businessesPage.services.eyebrow}</p>
@@ -114,6 +116,7 @@ export function ServicesOverview() {
           })}
         </div>
       </div>
+      </InViewReveal>
     </section>
   );
 }

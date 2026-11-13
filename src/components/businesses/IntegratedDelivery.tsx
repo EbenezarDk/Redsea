@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef } from "react";
 import { businessesPage } from "@/data/site-content";
 import { gsap, registerMotion, ScrollTrigger } from "@/lib/motion";
+import { InViewReveal } from "@/components/motion/InViewReveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const phases = businessesPage.delivery.phases;
@@ -59,68 +60,70 @@ export function IntegratedDelivery() {
 
   return (
     <section ref={root} id="delivery" aria-labelledby="delivery-title" className="blueprint">
-      <div className="shell py-20">
-        <SectionHeading title={businessesPage.delivery.title} titleId="delivery-title">
-          <span className="block">{businessesPage.delivery.body}</span>
-          <span className="mt-[6px] block">{businessesPage.delivery.bodySecondary}</span>
-        </SectionHeading>
+      <InViewReveal>
+        <div className="shell py-20">
+          <SectionHeading title={businessesPage.delivery.title} titleId="delivery-title">
+            <span className="block">{businessesPage.delivery.body}</span>
+            <span className="mt-[6px] block">{businessesPage.delivery.bodySecondary}</span>
+          </SectionHeading>
 
-        <div className="mt-10 w-full" role="img" aria-label="Design, Build, Operate, Maintain">
-          <div className="relative h-4 w-full">
-            <span aria-hidden className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-rsi/25" />
-            <span
-              ref={line}
-              aria-hidden
-              className="absolute inset-x-0 top-1/2 h-0.5 origin-left -translate-y-1/2 bg-rsi"
-            />
-            <ol className="absolute inset-0 grid grid-cols-4">
+          <div className="mt-10 w-full" role="img" aria-label="Design, Build, Operate, Maintain">
+            <div className="relative h-4 w-full">
+              <span aria-hidden className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-rsi/25" />
+              <span
+                ref={line}
+                aria-hidden
+                className="absolute inset-x-0 top-1/2 h-0.5 origin-left -translate-y-1/2 bg-rsi"
+              />
+              <ol className="absolute inset-0 grid grid-cols-4">
+                {phases.map((phase, index) => (
+                  <li
+                    key={phase.label}
+                    className={
+                      index === 0
+                        ? "flex items-center justify-start"
+                        : index === phases.length - 1
+                          ? "flex items-center justify-end"
+                          : "flex items-center justify-center"
+                    }
+                  >
+                    <span
+                      ref={(node) => {
+                        if (node) dots.current[index] = node;
+                      }}
+                      aria-hidden
+                      className="block size-3.5 rounded-full"
+                      style={{ backgroundColor: "#E59EA5" }}
+                    />
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            <ol className="mt-3 grid grid-cols-4 gap-2">
               {phases.map((phase, index) => (
                 <li
                   key={phase.label}
                   className={
                     index === 0
-                      ? "flex items-center justify-start"
+                      ? "text-left"
                       : index === phases.length - 1
-                        ? "flex items-center justify-end"
-                        : "flex items-center justify-center"
+                        ? "text-right"
+                        : "text-center"
                   }
                 >
-                  <span
-                    ref={(node) => {
-                      if (node) dots.current[index] = node;
-                    }}
-                    aria-hidden
-                    className="block size-3.5 rounded-full"
-                    style={{ backgroundColor: "#E59EA5" }}
-                  />
+                  <span className="whitespace-nowrap font-display text-[clamp(1.2rem,2.4vw,2.4rem)] font-normal tracking-[-0.03em]">
+                    {phase.label}
+                  </span>
+                  <p className="type-body mt-2 whitespace-nowrap font-body leading-relaxed text-graphite">
+                    {phase.body}
+                  </p>
                 </li>
               ))}
             </ol>
           </div>
-
-          <ol className="mt-3 grid grid-cols-4 gap-2">
-            {phases.map((phase, index) => (
-              <li
-                key={phase.label}
-                className={
-                  index === 0
-                    ? "text-left"
-                    : index === phases.length - 1
-                      ? "text-right"
-                      : "text-center"
-                }
-              >
-                <span className="whitespace-nowrap font-display text-[clamp(1.2rem,2.4vw,2.4rem)] font-normal tracking-[-0.03em]">
-                  {phase.label}
-                </span>
-                <p className="type-body mt-2 whitespace-nowrap font-body leading-relaxed text-graphite">
-                  {phase.body}
-                </p>
-              </li>
-            ))}
-          </ol>
         </div>
-      </div>
+      </InViewReveal>
     </section>
   );
 }

@@ -92,6 +92,71 @@ body {
   margin-inline: auto;
 }
 
+/* Soft section enter — used by InViewReveal / ScrollScene */
+.reveal-on-view {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-view.is-inview {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+.reveal-on-view .reveal-item {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+}
+
+.reveal-on-view.is-inview .reveal-item {
+  animation: rsi-reveal-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.reveal-on-view.is-inview .reveal-item:nth-child(1) {
+  animation-delay: 0.04s;
+}
+.reveal-on-view.is-inview .reveal-item:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.reveal-on-view.is-inview .reveal-item:nth-child(3) {
+  animation-delay: 0.16s;
+}
+.reveal-on-view.is-inview .reveal-item:nth-child(4) {
+  animation-delay: 0.22s;
+}
+.reveal-on-view.is-inview .reveal-item:nth-child(5) {
+  animation-delay: 0.28s;
+}
+.reveal-on-view.is-inview .reveal-item:nth-child(6) {
+  animation-delay: 0.34s;
+}
+
+@keyframes rsi-reveal-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-view,
+  .reveal-on-view .reveal-item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+}
+
 .skip-link {
   position: absolute;
   left: 1rem;
