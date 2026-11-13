@@ -14,9 +14,9 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="overflow-hidden bg-[#101010] text-white">
-      <InViewReveal>
-        <div className="shell section-pad-top grid gap-12 lg:grid-cols-12">
+    <footer className="overflow-hidden bg-[#101010] pt-[80px] pb-0 text-white">
+      <InViewReveal className="pb-0">
+        <div className="shell grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-6">
             <Logo imageClassName="h-[80px]" />
             <p className="type-body mt-6 max-w-xl font-body leading-relaxed text-white/75">{brandStatement}</p>

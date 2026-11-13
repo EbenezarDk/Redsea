@@ -8,9 +8,9 @@ export function BusinessPreview() {
     <ScrollScene
       id="businesses"
       labelledBy="businesses-title"
-      className="relative flex flex-col bg-charcoal text-white"
+      className="relative flex flex-col bg-charcoal text-white pt-[80px] pb-0"
     >
-      <div className="shell section-pad-top flex flex-col">
+      <div className="shell flex flex-col pb-0">
         <div className="shrink-0 pb-3 md:pb-4">
           <div className="flex max-w-4xl flex-col gap-[6px]">
             <Eyebrow light rule={false}>
