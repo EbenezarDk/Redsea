@@ -10,6 +10,8 @@ type AnimatedNavLinkProps = {
   href: string;
   label: string;
   active?: boolean;
+  /** Non-interactive placeholder item — looks like a link, does nothing on click. */
+  dummy?: boolean;
   /** dark = white underline; light = RSI red underline */
   tone?: "dark" | "light";
   className?: string;
@@ -20,6 +22,7 @@ export function AnimatedNavLink({
   href,
   label,
   active = false,
+  dummy = false,
   tone = "dark",
   className,
   onNavigate,
@@ -86,21 +89,8 @@ export function AnimatedNavLink({
     });
   }, [reduced]);
 
-  return (
-    <Link
-      href={href}
-      scroll={false}
-      aria-current={active ? "page" : undefined}
-      onClick={(event) => onNavigate?.(href, event)}
-      onPointerEnter={rollReel}
-      onPointerLeave={resetReel}
-      onFocus={rollReel}
-      onBlur={resetReel}
-      className={cn(
-        "group relative inline-flex items-center py-2 text-[0.8125rem] font-medium tracking-[0.01em] text-current",
-        className,
-      )}
-    >
+  const content = (
+    <>
       <span className="relative block h-[1.05em] overflow-hidden leading-none">
         <span ref={primaryRef} className="block will-change-transform">
           {label}
@@ -121,6 +111,42 @@ export function AnimatedNavLink({
           tone === "light" ? "bg-rsi" : "bg-white",
         )}
       />
+    </>
+  );
+
+  const sharedClass = cn(
+    "group relative inline-flex items-center py-2 text-[17px] font-medium tracking-[0.01em] text-current",
+    dummy && "cursor-default",
+    className,
+  );
+
+  if (dummy) {
+    return (
+      <span
+        className={sharedClass}
+        aria-disabled="true"
+        role="presentation"
+        onPointerEnter={rollReel}
+        onPointerLeave={resetReel}
+      >
+        {content}
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      scroll={false}
+      aria-current={active ? "page" : undefined}
+      onClick={(event) => onNavigate?.(href, event)}
+      onPointerEnter={rollReel}
+      onPointerLeave={resetReel}
+      onFocus={rollReel}
+      onBlur={resetReel}
+      className={sharedClass}
+    >
+      {content}
     </Link>
   );
 }

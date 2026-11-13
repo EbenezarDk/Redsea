@@ -16,7 +16,7 @@ export const ProjectContent = forwardRef<HTMLDivElement, Props>(function Project
   ref,
 ) {
   return (
-    <div ref={ref} className={cn("relative h-[17.5rem]", className)}>
+    <div ref={ref} className={cn("relative min-h-[17.5rem]", className)}>
       {rsiProjects.map((project, index) => {
         const active = index === activeIndex;
         return (
@@ -25,7 +25,7 @@ export const ProjectContent = forwardRef<HTMLDivElement, Props>(function Project
             data-project-copy
             aria-hidden={!active}
             className={cn(
-              "absolute inset-x-0 top-0 flex h-full flex-col justify-start text-charcoal",
+              "absolute inset-0 flex flex-col justify-start text-charcoal",
               active ? "pointer-events-auto" : "pointer-events-none",
             )}
             style={{ opacity: active ? 1 : 0 }}
@@ -38,13 +38,14 @@ export const ProjectContent = forwardRef<HTMLDivElement, Props>(function Project
             </p>
             <h3
               data-copy-part
-              className="mt-3 font-display text-[clamp(1.85rem,2.8vw,3.1rem)] font-normal leading-[0.95] tracking-[-0.03em]"
+              className="mt-3 font-display text-[clamp(1.15rem,2.4vw,2.4rem)] font-normal leading-[0.95] tracking-[-0.03em]"
             >
               {project.name}
             </h3>
             <p
               data-copy-part
-              className="mt-4 max-w-sm text-base leading-relaxed text-graphite"
+              className="mt-4 w-full max-w-none text-base leading-relaxed text-graphite"
+              style={{ fontSize: 14 }}
             >
               {project.description}
             </p>

@@ -2,65 +2,86 @@
 
 import { useLayoutEffect, useRef } from "react";
 import { about } from "@/data/site-content";
-import { DESKTOP_MOTION, gsap, registerMotion } from "@/lib/motion";
-import { AssetFrame } from "@/components/ui/AssetFrame";
+import { gsap, registerMotion } from "@/lib/motion";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ScrollScene } from "@/components/motion/ScrollScene";
 
+function parseStatFigure(figure: string) {
+  const match = figure.match(/^(\d+)(.*)$/);
+  if (!match) return { value: 0, suffix: figure };
+  return { value: Number(match[1]), suffix: match[2] ?? "" };
+}
+
 export function About() {
   const root = useRef<HTMLElement>(null);
-  const first = useRef<HTMLDivElement>(null);
-  const second = useRef<HTMLDivElement>(null);
   const stats = useRef<HTMLUListElement>(null);
 
   useLayoutEffect(() => {
     const section = root.current;
-    if (!section) return;
+    const list = stats.current;
+    if (!section || !list) return;
     registerMotion();
     const mm = gsap.matchMedia();
+    const figures = () => list.querySelectorAll<HTMLElement>("[data-stat-figure]");
 
-    mm.add(DESKTOP_MOTION, () => {
-      if (first.current) {
-        gsap.to(first.current, {
-          yPercent: -14,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
-      if (second.current) {
-        gsap.to(second.current, {
-          yPercent: -8,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
+    const paintFinal = () => {
+      figures().forEach((el) => {
+        const target = el.dataset.value ?? "0";
+        const suffix = el.dataset.suffix ?? "";
+        el.textContent = `${target}${suffix}`;
+      });
+    };
+
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      paintFinal();
     });
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-      const items = stats.current?.querySelectorAll("li");
-      if (!items?.length) return;
+      const items = list.querySelectorAll<HTMLElement>("li");
+      const nodes = figures();
+      if (!items.length || !nodes.length) return;
+
+      nodes.forEach((el) => {
+        const suffix = el.dataset.suffix ?? "";
+        el.textContent = `0${suffix}`;
+      });
+
+      const runCounters = () => {
+        nodes.forEach((el, index) => {
+          const target = Number(el.dataset.value ?? 0);
+          const suffix = el.dataset.suffix ?? "";
+          // Years run a nearby window so the tick is readable; small figures count from 0.
+          const from = target >= 1000 ? Math.max(0, target - 140) : 0;
+          const state = { value: from };
+          el.textContent = `${from}${suffix}`;
+          gsap.to(state, {
+            value: target,
+            duration: target >= 1000 ? 2.2 : 1.8,
+            delay: index * 0.15,
+            ease: "power1.out",
+            onUpdate: () => {
+              el.textContent = `${Math.round(state.value)}${suffix}`;
+            },
+            onComplete: () => {
+              el.textContent = `${target}${suffix}`;
+            },
+          });
+        });
+      };
+
       gsap.from(items, {
-        y: 24,
+        y: 20,
         autoAlpha: 0,
-        stagger: 0.12,
-        duration: 0.8,
+        stagger: 0.1,
+        duration: 0.7,
         ease: "power3.out",
         immediateRender: false,
         scrollTrigger: {
-          trigger: stats.current,
-          start: "top 85%",
+          trigger: list,
+          start: "top 80%",
           once: true,
+          onEnter: runCounters,
         },
       });
     });
@@ -101,34 +122,42 @@ export function About() {
           </div>
         </div>
         <div className="lg:col-span-7">
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div ref={first} className="sm:mt-16">
-              <div className="aspect-[4/5]">
-                <AssetFrame id={about.images[0]} sizes="(min-width: 1024px) 28vw, 90vw" />
-              </div>
-            </div>
-            <div ref={second}>
-              <div className="aspect-[4/5]">
-                <AssetFrame id={about.images[1]} sizes="(min-width: 1024px) 28vw, 90vw" />
-              </div>
-            </div>
+          <div className="relative aspect-[4/5] w-full overflow-hidden bg-charcoal sm:aspect-[16/10]">
+            <iframe
+              title="Red Sea International — About"
+              src={`https://www.youtube.com/embed/${about.videoId}?rel=0&modestbranding=1`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+              className="absolute inset-0 h-full w-full border-0"
+            />
           </div>
-          <ul ref={stats} className="mt-10 divide-y divide-charcoal/15 border-y border-charcoal/15">
-            {about.stats.map((stat) => (
-              <li key={stat.full} className="flex items-baseline justify-between gap-6 py-5">
-                <span className="sr-only">{stat.full}</span>
-                <span
-                  aria-hidden
-                  className="hero-headline font-display font-normal"
-                  style={{ fontSize: 52 }}
-                >
-                  {stat.figure}
-                </span>
-                <span aria-hidden className="max-w-[14rem] text-right text-sm text-graphite">
-                  {stat.label}
-                </span>
-              </li>
-            ))}
+          <ul
+            ref={stats}
+            className="mt-10 grid grid-cols-1 divide-y divide-charcoal/15 border-y border-charcoal/15 sm:grid-cols-3 sm:divide-x sm:divide-y-0"
+          >
+            {about.stats.map((stat) => {
+              const { value, suffix } = parseStatFigure(stat.figure);
+              return (
+                <li key={stat.full} className="flex flex-col gap-2 px-0 py-6 sm:px-6 sm:first:pl-0 sm:last:pr-0">
+                  <span className="sr-only">{stat.full}</span>
+                  <span
+                    aria-hidden
+                    data-stat-figure
+                    data-value={value}
+                    data-suffix={suffix}
+                    className="hero-headline font-display font-normal tabular-nums"
+                    style={{ fontSize: 52 }}
+                  >
+                    0{suffix}
+                  </span>
+                  <span aria-hidden className="text-sm leading-snug text-graphite">
+                    {stat.label}
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

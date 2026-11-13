@@ -26,8 +26,16 @@ export default function BusinessesPage() {
       <IntegratedDelivery />
       <CTA
         padTop
+        title={contact.businesses.title}
+        support={contact.businesses.support}
+        showSupportNote={false}
         primary={{
-          label: contact.homeLabel,
+          label: contact.teamLabel,
+          href: officialContactUrl,
+          external: true,
+        }}
+        secondary={{
+          label: contact.discussLabel,
           href: officialContactUrl,
           external: true,
         }}

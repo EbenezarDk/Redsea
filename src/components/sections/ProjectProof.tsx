@@ -70,7 +70,6 @@ export function ProjectProof() {
       const layoutPanels = () => {
         const viewportH = viewport.clientHeight;
         if (!viewportH) return;
-        // Panels fill the clipped media frame; last panel docks to the bottom margin.
         const panelH = viewportH;
         const gap = Math.round(viewportH * 0.04);
         panels.forEach((panel, i) => {
@@ -203,45 +202,43 @@ export function ProjectProof() {
       className="bg-white text-charcoal"
     >
       <div ref={pin} className="pin-layout hidden lg:block">
-        <div
-          className="shell grid h-[100svh] items-stretch"
-          style={{ gridTemplateColumns: "35% 65%" }}
-        >
-          <div className="flex min-h-0 flex-col justify-between overflow-hidden py-28 pr-10">
-            <div className="flex max-w-4xl flex-col gap-[6px]">
-              <Eyebrow rule={false}>{projectProofCopy.eyebrow}</Eyebrow>
-              <h2
-                id="projects-title"
-                className="hero-headline font-display font-normal"
-                style={{ fontSize: 52, marginTop: 0, marginBottom: 0 }}
-              >
-                {projectProofCopy.title}
-              </h2>
-              <p
-                className="type-body max-w-xl font-body leading-relaxed text-graphite"
-                style={{ fontSize: 14, marginTop: 0, marginBottom: 0 }}
-              >
-                {projectProofCopy.body}
-              </p>
-            </div>
+        <div className="shell flex h-[100svh] flex-col py-24 xl:py-28">
+          <div className="flex w-full shrink-0 flex-col gap-[6px]">
+            <Eyebrow rule={false}>{projectProofCopy.eyebrow}</Eyebrow>
+            <h2
+              id="projects-title"
+              className="hero-headline font-display font-normal whitespace-nowrap"
+              style={{ fontSize: "clamp(2rem, 3.2vw, 3.25rem)", marginTop: 0, marginBottom: 0 }}
+            >
+              {projectProofCopy.title}
+            </h2>
+            <p
+              className="type-body w-full max-w-none font-body leading-relaxed text-graphite"
+              style={{ fontSize: 14, marginTop: 0, marginBottom: 0 }}
+            >
+              {projectProofCopy.body}
+            </p>
+          </div>
 
-            <div className="mt-10 flex flex-col gap-5">
+          {/* Single stack: copy half + reduced image half */}
+          <div className="mt-8 grid min-h-0 flex-1 grid-cols-2 gap-8 xl:gap-10">
+            <div className="flex min-h-0 flex-col justify-center gap-5">
               <ProjectProgress ref={progressRoot} activeIndex={index} />
               <ProjectContent
                 ref={copyRoot}
                 activeIndex={index}
                 onExplore={openDetail}
+                className="h-auto min-h-[14rem] flex-1"
               />
             </div>
-          </div>
 
-          <div className="relative min-h-0 overflow-hidden py-28 pl-4">
-            {/* Inset to py-28 so the stack clips to the same bottom margin as the left copy */}
-            <div
-              ref={mediaViewport}
-              className="absolute bottom-28 left-4 right-0 top-28 overflow-hidden"
-            >
-              <ProjectMediaTrack ref={track} />
+            <div className="relative min-h-0 h-full">
+              <div
+                ref={mediaViewport}
+                className="absolute inset-0 overflow-hidden border border-charcoal/10"
+              >
+                <ProjectMediaTrack ref={track} sizes="42vw" />
+              </div>
             </div>
           </div>
         </div>
@@ -249,16 +246,16 @@ export function ProjectProof() {
 
       <div className="flow-layout lg:hidden">
         <div className="shell py-20 md:py-28">
-          <div className="flex max-w-4xl flex-col gap-[6px]">
+          <div className="flex w-full flex-col gap-[6px]">
             <Eyebrow rule={false}>{projectProofCopy.eyebrow}</Eyebrow>
             <h2
               className="hero-headline font-display font-normal"
-              style={{ fontSize: 42, marginTop: 0, marginBottom: 0 }}
+              style={{ fontSize: "clamp(2rem, 6vw, 2.6rem)", marginTop: 0, marginBottom: 0 }}
             >
               {projectProofCopy.title}
             </h2>
             <p
-              className="type-body max-w-2xl font-body leading-relaxed text-graphite"
+              className="type-body w-full max-w-none font-body leading-relaxed text-graphite"
               style={{ fontSize: 14, marginTop: 0, marginBottom: 0 }}
             >
               {projectProofCopy.body}

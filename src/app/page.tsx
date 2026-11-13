@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { About } from "@/components/sections/About";
+import { AtAGlance } from "@/components/sections/AtAGlance";
 import { BusinessPreview } from "@/components/sections/BusinessPreview";
 import { Capabilities } from "@/components/sections/Capabilities";
 import { CTA } from "@/components/sections/CTA";
 import { Hero } from "@/components/sections/Hero";
+import { Newsroom } from "@/components/sections/Newsroom";
 import { ProjectProof } from "@/components/sections/ProjectProof";
 import { contact, officialContactUrl, organizationJsonLd, seo } from "@/data/site-content";
 
@@ -26,10 +28,13 @@ export default function HomePage() {
       <Hero>
         <About />
       </Hero>
+      <AtAGlance />
       <Capabilities />
       <BusinessPreview />
       <ProjectProof />
+      <Newsroom />
       <CTA
+        padTop
         primary={{
           label: contact.homeLabel,
           href: officialContactUrl,

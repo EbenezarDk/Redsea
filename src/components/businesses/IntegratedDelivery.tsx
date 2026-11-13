@@ -82,7 +82,7 @@ export function IntegratedDelivery() {
             <ol className="absolute inset-0 grid grid-cols-4">
               {phases.map((phase, index) => (
                 <li
-                  key={phase}
+                  key={phase.label}
                   className={
                     index === 0
                       ? "flex items-center justify-start"
@@ -107,7 +107,7 @@ export function IntegratedDelivery() {
           <ol className="mt-3 grid grid-cols-4 gap-2">
             {phases.map((phase, index) => (
               <li
-                key={phase}
+                key={phase.label}
                 className={
                   index === 0
                     ? "text-left"
@@ -116,16 +116,15 @@ export function IntegratedDelivery() {
                       : "text-center"
                 }
               >
-                <span className="font-display text-[clamp(1.2rem,2.4vw,2.4rem)] font-normal tracking-[-0.03em]">
-                  {phase}
+                <span className="whitespace-nowrap font-display text-[clamp(1.2rem,2.4vw,2.4rem)] font-normal tracking-[-0.03em]">
+                  {phase.label}
                 </span>
+                <p className="mt-2 whitespace-nowrap text-sm leading-relaxed text-graphite">
+                  {phase.body}
+                </p>
               </li>
             ))}
           </ol>
-
-          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-graphite">
-            {businessesPage.delivery.metaphor}
-          </p>
         </div>
       </div>
     </section>

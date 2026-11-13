@@ -23,6 +23,10 @@ export const brandStatement =
 export const nav = [
   { href: "/", label: "Home" },
   { href: "/businesses", label: "Our Businesses" },
+  { href: "#who-we-are", label: "Who We Are", dummy: true },
+  { href: "#sectors-we-serve", label: "Sectors We Serve", dummy: true },
+  { href: "#our-divisions", label: "Our Divisions", dummy: true },
+  { href: "#investor-relations", label: "Investor Relations", dummy: true },
   { href: "/#contact", label: "Contact", opensContact: true },
 ] as const;
 
@@ -54,7 +58,7 @@ export const about = {
       full: "65+ — Countries of experience",
     },
   ],
-  images: ["aboutFactory", "aboutSite"] as const satisfies readonly AssetId[],
+  videoId: "VHFO_i94jLs",
 } as const;
 
 export const capabilities = {
@@ -101,6 +105,9 @@ export const businesses = [
     title: "Red Sea Housing Services",
     preview: "Modular construction, temporary facilities and permanent building solutions.",
     body: "We design and manufacture modular building systems for workforce accommodation, offices, hospitality and a range of temporary and permanent uses.",
+    paragraph:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    label: "Modular Solutions",
     tags: [
       "Modular construction",
       "Workforce accommodation",
@@ -116,6 +123,9 @@ export const businesses = [
     title: "RSI Facilities Management",
     preview: "Hard and soft FM, catering, hospitality and camp operations.",
     body: "We support daily facility performance and occupant wellbeing through technical maintenance, soft services, catering, hospitality and integrated camp management.",
+    paragraph:
+      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
+    label: "Facilities & Operations",
     tags: ["Hard FM", "Soft FM", "Catering", "Camp management", "Life support"],
     asset: "facilities" as AssetId,
     serviceAnchor: "service-facilities",
@@ -126,6 +136,9 @@ export const businesses = [
     title: "First Fix | MEP Contracting",
     preview: "Mechanical, electrical, plumbing and infrastructure delivery.",
     body: "Our MEP and infrastructure capabilities support complex building systems and integrated project delivery.",
+    paragraph:
+      "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+    label: "MEP Contracting",
     tags: [
       "Mechanical works",
       "Electrical works",
@@ -142,6 +155,9 @@ export const businesses = [
     title: "Real Estate Development",
     preview: "Hospitality, residential and commercial development opportunities.",
     body: "Our development activities focus on opportunities in hospitality, residential and commercial facilities.",
+    paragraph:
+      "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur.",
+    label: "Development",
     tags: ["Hospitality", "Residential", "Commercial"],
     asset: "realEstate" as AssetId,
     serviceAnchor: "service-real-estate",
@@ -152,6 +168,9 @@ export const businesses = [
     title: "Specialized Investment",
     preview: "Strategic investments, acquisitions and partnerships.",
     body: "We evaluate investment and partnership opportunities aligned with the Group’s capabilities and long-term direction.",
+    paragraph:
+      "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur blandit tempus porttitor.",
+    label: "Investment",
     tags: ["Investments", "M&A", "Strategic partnerships"],
     asset: "investment" as AssetId,
     serviceAnchor: "service-investment",
@@ -207,7 +226,6 @@ export const sectorsSection = {
 
 export const contact = {
   title: "Let’s Build the Right Solution",
-  /** Editorial proposal — identify it in the UI. */
   support: "Connect with Red Sea International to discuss your project requirements.",
   supportNote: "Editorial proposal",
   handoff:
@@ -215,6 +233,12 @@ export const contact = {
   homeLabel: "Contact RSI",
   discussLabel: "Discuss Your Project",
   teamLabel: "Contact Our Team",
+  /** /businesses contact band only */
+  businesses: {
+    title: "Connected Expertise Across the Facility Lifecycle",
+    support:
+      "From modular manufacturing and project construction to catering, maintenance and site operations, RSI’s business areas can collaborate to address requirements that span multiple disciplines. Engagement models are tailored to each client, location and scope.",
+  },
 } as const;
 
 export const businessesPage = {
@@ -265,9 +289,12 @@ export const businessesPage = {
     body: "From modular manufacturing and project construction to catering, maintenance and site operations, RSI’s business areas can collaborate to address requirements that span multiple disciplines.",
     bodySecondary:
       "Engagement models are tailored to each client, location and scope.",
-    phases: ["Design", "Build", "Operate", "Maintain"],
-    metaphor:
-      "Visual metaphor only. It does not indicate that RSI supplies every phase on every contract.",
+    phases: [
+      { label: "Design", body: "Lorem ipsum dolor." },
+      { label: "Build", body: "Sit amet consectetur." },
+      { label: "Operate", body: "Adipiscing elit sed." },
+      { label: "Maintain", body: "Do eiusmod tempor." },
+    ],
   },
 } as const;
 

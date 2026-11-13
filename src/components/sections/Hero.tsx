@@ -11,19 +11,20 @@ const HERO_VIDEO_SRC = "/videos/hero-approach-scrub.mp4";
 
 /**
  * Scroll progress → fraction of the real video duration.
- * Stages follow the filmed camera move; the last frames are held
- * so the white ending is on screen before About finishes revealing.
+ * Approach lands on the centered building frame, then About reveals
+ * immediately on continued scroll (no empty hold gap).
  */
+/** Lit modular floor centered behind hero copy — matches the settle screenshot. */
+const SETTLE_RATIO = 3.35 / 7.85;
+
 const STAGE_MARKS = [
   { p: 0, ratio: 0 },
-  { p: 0.25, ratio: 2 / 7.85 },
-  { p: 0.5, ratio: 4 / 7.85 },
-  { p: 0.75, ratio: 6.25 / 7.85 },
-  { p: 0.94, ratio: 1 },
-  { p: 1, ratio: 1 },
+  { p: 0.38, ratio: SETTLE_RATIO },
+  { p: 1, ratio: SETTLE_RATIO },
 ] as const;
 
-const REVEAL_START = 0.92;
+/** About starts as soon as the hero has settled — no dummy mid-scroll. */
+const REVEAL_START = 0.42;
 
 function timeForProgress(progress: number, duration: number) {
   const p = Math.min(1, Math.max(0, progress));
@@ -142,16 +143,11 @@ export function Hero({ children }: { children?: ReactNode }) {
           seeker.seek(timeForProgress(progress, duration));
         }
 
-        const ratio =
-          Number.isFinite(duration) && duration > 0
-            ? timeForProgress(progress, duration) / duration
-            : progress;
-
         if (progress < REVEAL_START) {
           gsap.set(aboutSlot, { opacity: 0, y: 0, pointerEvents: "none" });
           gsap.set(videoLayer, { autoAlpha: 1 });
           pin.style.backgroundColor = "";
-          setHeaderTone(ratio >= 0.93 ? "light" : null);
+          setHeaderTone(null);
           return;
         }
 
@@ -209,18 +205,17 @@ export function Hero({ children }: { children?: ReactNode }) {
         return Math.max(0, bottomTop - centeredTop);
       };
 
-      // Rise to the building center across the first scroll, stay through
-      // that full scroll, then clear before the cloud immersion.
+      // Rise to settle, then clear straight into About — no empty hold scroll.
       timeline
-        .to(cue, { autoAlpha: 0, duration: 0.08 }, 0.03)
+        .to(cue, { autoAlpha: 0, duration: 0.06 }, 0.02)
         .fromTo(
           shell,
           { y: () => placeAtBottom() },
-          { y: 0, duration: 0.42, ease: "none" },
+          { y: 0, duration: 0.38, ease: "none" },
           0,
         )
-        .to(copy, { autoAlpha: 0, duration: 0.14 }, 0.5)
-        .to(scrim, { autoAlpha: 0, duration: 0.16 }, 0.5)
+        .to(copy, { autoAlpha: 0, duration: 0.1 }, 0.4)
+        .to(scrim, { autoAlpha: 0, duration: 0.12 }, 0.4)
         .set({}, {}, 1);
 
       const arm = () => {
@@ -242,11 +237,11 @@ export function Hero({ children }: { children?: ReactNode }) {
     };
 
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () =>
-      bindStory("+=200%"),
+      bindStory("+=120%"),
     );
 
     mm.add("(max-width: 767px) and (prefers-reduced-motion: no-preference)", () =>
-      bindStory("+=140%"),
+      bindStory("+=100%"),
     );
 
     mm.add("(prefers-reduced-motion: reduce)", () => {
@@ -256,7 +251,10 @@ export function Hero({ children }: { children?: ReactNode }) {
       const show = () => {
         video.pause();
         if (Number.isFinite(video.duration)) {
-          video.currentTime = Math.min(video.duration * 0.22, Math.max(0, video.duration - 0.05));
+          video.currentTime = Math.min(
+            video.duration * SETTLE_RATIO,
+            Math.max(0, video.duration - 0.05),
+          );
         }
       };
       if (video.readyState >= 1) show();

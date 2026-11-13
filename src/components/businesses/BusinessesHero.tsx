@@ -23,7 +23,7 @@ export function BusinessesHero() {
       />
 
       <div className="shell relative z-10 flex min-h-[100svh] flex-col justify-end pb-28 pt-32">
-        <div className="flex flex-col gap-[6px]">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-[6px] text-center">
           <TextAnimate
             animation="fadeIn"
             by="line"

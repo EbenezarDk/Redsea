@@ -16,15 +16,25 @@ export function Footer() {
     <footer className="overflow-hidden bg-[#101010] text-white">
       <div className="shell grid gap-12 py-16 md:py-20 lg:grid-cols-12">
         <div className="lg:col-span-6">
-          <Logo />
+          <Logo imageClassName="h-[80px]" />
           <p className="mt-6 max-w-xl text-sm leading-relaxed text-white/75">{brandStatement}</p>
         </div>
         <nav aria-label="Footer" className="flex flex-col gap-3 lg:col-span-3">
-          {nav.map((item) => (
-            <Link key={item.href} href={item.href} className="text-sm text-white/80 hover:text-white">
-              {item.label}
-            </Link>
-          ))}
+          {nav.map((item) =>
+            "dummy" in item && item.dummy ? (
+              <span key={item.href} className="text-sm text-white/50">
+                {item.label}
+              </span>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm text-white/80 hover:text-white"
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
         </nav>
         <div className="lg:col-span-3">
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/60">

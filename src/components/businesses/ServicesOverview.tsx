@@ -2,17 +2,10 @@
 
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { businesses, businessesPage } from "@/data/site-content";
-import { DESKTOP_MOTION, registerMotion, ScrollTrigger } from "@/lib/motion";
-import { lenisRef } from "@/lib/lenis";
-import { AssetFrame } from "@/components/ui/AssetFrame";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { InteractiveServiceIcon } from "@/components/businesses/ServiceIcons";
 import { cn } from "@/lib/cn";
 
 const groups = businessesPage.services.groups;
-
-function holdSelection(lock: { current: number }) {
-  lock.current = Date.now() + 900;
-}
 
 function tagsFor(anchor: string) {
   return businesses.find((business) => business.serviceAnchor === anchor)?.tags ?? [];
@@ -20,150 +13,105 @@ function tagsFor(anchor: string) {
 
 export function ServicesOverview() {
   const [active, setActive] = useState<string>(groups[0].id);
-  const lock = useRef(0);
   const buttons = useRef<Array<HTMLButtonElement | null>>([]);
 
   useEffect(() => {
-    registerMotion();
-    const media = window.matchMedia(DESKTOP_MOTION);
-    const triggers: ScrollTrigger[] = [];
-
-    const mount = () => {
-      triggers.splice(0, triggers.length).forEach((item) => item.kill());
-      if (!media.matches) return;
-      groups.forEach((group) => {
-        triggers.push(
-          ScrollTrigger.create({
-            trigger: `#${group.anchor}`,
-            start: "top center",
-            end: "bottom center",
-            onToggle: (self) => {
-              if (!self.isActive || Date.now() < lock.current) return;
-              setActive(group.id);
-            },
-          }),
-        );
-      });
+    const applyHash = () => {
+      const id = window.location.hash.replace("#", "");
+      const match = groups.find((group) => group.anchor === id || group.id === id);
+      if (match) setActive(match.id);
     };
-
-    mount();
-    media.addEventListener("change", mount);
-    return () => {
-      media.removeEventListener("change", mount);
-      triggers.forEach((item) => item.kill());
-    };
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
   }, []);
 
-  function choose(index: number, scroll: boolean) {
+  function choose(index: number) {
     const group = groups[index];
     if (!group) return;
-    holdSelection(lock);
     setActive(group.id);
     buttons.current[index]?.focus();
-    if (!scroll) return;
-    const target = document.getElementById(group.anchor);
-    if (!target) return;
-    if (lenisRef.current) lenisRef.current.scrollTo(target, { offset: -100 });
-    else target.scrollIntoView({ behavior: "smooth", block: "start" });
+    const next = `${window.location.pathname}${window.location.search}#${group.anchor}`;
+    if (`${window.location.pathname}${window.location.search}${window.location.hash}` !== next) {
+      window.history.replaceState(null, "", next);
+    }
   }
 
   function onTabKey(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     const last = groups.length - 1;
     if (event.key === "ArrowDown" || event.key === "ArrowRight") {
       event.preventDefault();
-      choose((index + 1) % groups.length, true);
+      choose((index + 1) % groups.length);
     } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
       event.preventDefault();
-      choose((index - 1 + groups.length) % groups.length, true);
+      choose((index - 1 + groups.length) % groups.length);
     } else if (event.key === "Home") {
       event.preventDefault();
-      choose(0, true);
+      choose(0);
     } else if (event.key === "End") {
       event.preventDefault();
-      choose(last, true);
+      choose(last);
     }
   }
 
   return (
-    <section id="services" aria-labelledby="services-title" className="bg-paper">
-      <div className="shell pb-28 pt-24 md:pt-32 lg:pt-40">
-        <SectionHeading
-          eyebrow={businessesPage.services.eyebrow}
-          title={businessesPage.services.title}
-          titleId="services-title"
-        />
-        <div className="mt-14 lg:grid lg:grid-cols-12 lg:gap-16">
-          <div className="hidden lg:col-span-4 lg:block">
-            <div className="sticky top-28" role="tablist" aria-orientation="vertical" aria-label="Service categories">
-              {groups.map((group, index) => {
-                const selected = active === group.id;
-                return (
-                  <button
-                    key={group.id}
-                    ref={(node) => {
-                      buttons.current[index] = node;
-                    }}
-                    id={`tab-${group.id}`}
-                    type="button"
-                    role="tab"
-                    aria-selected={selected}
-                    aria-controls={`panel-${group.id}`}
-                    tabIndex={active === "" ? (index === 0 ? 0 : -1) : selected ? 0 : -1}
-                    onClick={() => choose(index, true)}
-                    onKeyDown={(event) => onTabKey(event, index)}
-                    className="flex w-full items-center gap-4 border-t border-charcoal/15 py-5 text-left text-charcoal"
-                  >
-                    <span className={cn("h-px w-8", selected ? "bg-rsi" : "bg-charcoal/25")} />
-                    <span className="font-display text-2xl font-normal leading-none tracking-[-0.03em]">
-                      {group.title}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div className="lg:col-span-8">
-            {groups.map((group) => {
-              const open = active === group.id;
-              const tags = tagsFor(group.anchor);
-              return (
-                <article
-                  key={group.id}
-                  id={group.anchor}
-                  data-service={group.id}
-                  className="scroll-mt-28 border-t border-charcoal/15 py-8 lg:min-h-[72vh] lg:py-14"
-                >
-                  <h3 className="font-display text-[clamp(2rem,4vw,3.4rem)] font-normal leading-none tracking-[-0.03em]">
-                    <button
-                      type="button"
-                      className="w-full text-left lg:hidden"
-                      aria-expanded={open}
-                      aria-controls={`panel-${group.id}`}
-                      onClick={() => setActive((current) => (current === group.id ? "" : group.id))}
+    <section id="services" aria-labelledby="services-title" className="bg-white text-charcoal">
+      <div className="shell py-16 md:py-20 lg:py-24">
+        <div className="border-b border-charcoal/15 pb-5">
+          <p className="type-eyebrow font-body text-[#3f3d3a]">{businessesPage.services.eyebrow}</p>
+          <h2
+            id="services-title"
+            className="hero-headline font-display font-normal leading-none"
+            style={{ fontSize: "clamp(1.6rem, 2.4vw, 2.4rem)", marginTop: 4, marginBottom: 0 }}
+          >
+            {businessesPage.services.title}
+          </h2>
+        </div>
+
+        <div
+          role="tablist"
+          aria-label="Service categories"
+          className="grid grid-cols-1 border-x border-b border-charcoal/15 sm:grid-cols-2 lg:grid-cols-5"
+        >
+          {groups.map((group, index) => {
+            const selected = active === group.id;
+            const tags = tagsFor(group.anchor);
+            return (
+              <button
+                key={group.id}
+                ref={(node) => {
+                  buttons.current[index] = node;
+                }}
+                id={group.anchor}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                onClick={() => choose(index)}
+                onKeyDown={(event) => onTabKey(event, index)}
+                className={cn(
+                  "group flex h-full flex-col items-start bg-white p-5 text-left text-charcoal transition-colors duration-500 hover:bg-rsi hover:text-white focus-visible:bg-rsi focus-visible:text-white lg:p-6",
+                  "border-b border-charcoal/15 sm:border-r lg:border-b-0",
+                  index === groups.length - 1 && "border-b-0 sm:border-r-0",
+                  (index === 1 || index === 3) && "sm:border-r-0 lg:border-r",
+                )}
+              >
+                <h3 className="flex items-start gap-3 font-display text-[clamp(1.15rem,1.4vw,1.45rem)] font-normal leading-[1.1] tracking-[-0.03em]">
+                  <InteractiveServiceIcon id={group.id} />
+                  <span>{group.title}</span>
+                </h3>
+                <ul className="mt-3 w-full list-disc border-t border-charcoal/15 pt-3 pl-4 group-hover:border-white/25 group-focus-visible:border-white/25">
+                  {tags.slice(0, 4).map((tag) => (
+                    <li
+                      key={tag}
+                      className="py-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-graphite group-hover:text-white/85 group-focus-visible:text-white/85"
                     >
-                      <span>{open ? "– " : "+ "}</span>
-                      {group.title}
-                    </button>
-                    <span className="hidden lg:block">{group.title}</span>
-                  </h3>
-                  <div id={`panel-${group.id}`} role="region" className={cn(open ? "block" : "max-lg:hidden", "lg:block")}>
-                    <div className="mt-6 grid gap-6 md:grid-cols-2">
-                      <ul>
-                        {tags.map((tag) => (
-                          <li key={tag} className="border-b border-charcoal/15 py-3 text-sm">
-                            {tag}
-                          </li>
-                        ))}
-                      </ul>
-                      <div className="aspect-[4/5] min-h-64">
-                        <AssetFrame id={group.asset} sizes="(min-width: 1024px) 30vw, 100vw" />
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>

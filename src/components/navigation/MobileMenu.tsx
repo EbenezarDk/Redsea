@@ -11,6 +11,7 @@ export type MobileNavItem = {
   href: string;
   label: string;
   opensContact?: boolean;
+  dummy?: boolean;
 };
 
 type MobileMenuProps = {
@@ -146,7 +147,7 @@ export function MobileMenu({
       id="mobile-nav"
       ref={panelRef}
       className={cn(
-        "fixed inset-0 z-40 bg-[#171717] text-[#F7F6F3] md:hidden",
+        "fixed inset-0 z-40 bg-[#171717] text-[#F7F6F3] lg:hidden",
         !open && "pointer-events-none",
       )}
       aria-hidden={!open}
@@ -172,6 +173,19 @@ export function MobileMenu({
               >
                 {item.label}
               </button>
+            );
+          }
+
+          if (item.dummy) {
+            return (
+              <span
+                key={item.href}
+                data-mobile-link
+                aria-disabled="true"
+                className="border-b border-white/15 py-4 font-display text-[clamp(2.4rem,12vw,3.5rem)] font-normal leading-none tracking-[-0.03em] text-white/55"
+              >
+                {item.label}
+              </span>
             );
           }
 

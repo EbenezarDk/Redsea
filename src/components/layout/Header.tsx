@@ -38,13 +38,15 @@ function isLightBackground(color: string) {
 
 const LIGHT_SECTION_IDS = new Set([
   "about",
-  "businesses",
+  "capabilities",
   "projects",
+  "newsroom",
   "services",
   "delivery",
   "contact",
 ]);
 const HERO_SECTION_IDS = new Set(["top", "businesses-intro"]);
+const DARK_SECTION_IDS = new Set(["businesses", "at-a-glance"]);
 
 function findSectionUnderHeader(): HTMLElement | null {
   if (typeof document === "undefined") return null;
@@ -101,6 +103,7 @@ function resolveHeaderSurface(): HeaderSurface {
   const section = findSectionUnderHeader();
   if (section) {
     if (HERO_SECTION_IDS.has(section.id)) return "hero";
+    if (DARK_SECTION_IDS.has(section.id)) return "dark";
     if (LIGHT_SECTION_IDS.has(section.id)) return "light";
     return "dark";
   }
@@ -237,6 +240,10 @@ export function Header() {
   const handleNavigate = useCallback(
     (href: string, event: React.MouseEvent<HTMLAnchorElement>) => {
       const item = nav.find((entry) => entry.href === href);
+      if (item && "dummy" in item && item.dummy) {
+        event.preventDefault();
+        return;
+      }
       if (item && "opensContact" in item && item.opensContact) {
         event.preventDefault();
         setMenuOpen(false);
@@ -297,6 +304,7 @@ export function Header() {
         href: item.href,
         label: item.label,
         opensContact: "opensContact" in item && item.opensContact,
+        dummy: "dummy" in item && item.dummy,
       })),
     [],
   );
@@ -317,7 +325,7 @@ export function Header() {
             "bg-[#171717]/80 text-white shadow-[0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md",
         )}
       >
-        <div className="flex h-20 items-center justify-between px-[clamp(24px,4vw,80px)]">
+        <div className="flex h-24 items-center justify-between px-[clamp(24px,4vw,80px)]">
           <Link
             href="/"
             scroll={false}
@@ -325,25 +333,27 @@ export function Header() {
             className="relative z-[60]"
             onClick={(event) => handleNavigate("/", event)}
           >
-            <Logo />
+            <Logo onLight={onLight} />
           </Link>
 
           <nav
             aria-label="Primary"
             className={cn(
-              "hidden items-center gap-9 md:flex",
+              "hidden items-center gap-[clamp(1rem,1.5vw,2rem)] lg:flex",
               contactOpen && "pointer-events-none opacity-0",
             )}
             aria-hidden={contactOpen || undefined}
           >
             {nav.map((item) => {
               const opensContact = "opensContact" in item && item.opensContact;
+              const dummy = "dummy" in item && item.dummy;
               return (
                 <AnimatedNavLink
                   key={item.href}
                   href={item.href}
                   label={item.label}
                   active={isActive(item.href, opensContact)}
+                  dummy={dummy}
                   tone={onLight ? "light" : "dark"}
                   onNavigate={handleNavigate}
                 />
@@ -357,7 +367,7 @@ export function Header() {
             className={cn(
               "relative z-[60] inline-flex h-11 min-w-11 items-center justify-center text-[0.72rem] font-medium uppercase tracking-[0.16em]",
               onLight ? "text-charcoal" : "text-white",
-              !contactOpen && "md:hidden",
+              !contactOpen && "lg:hidden",
             )}
             aria-expanded={contactOpen ? true : menuOpen}
             aria-controls={contactOpen ? undefined : "mobile-nav"}

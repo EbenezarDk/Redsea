@@ -158,6 +158,148 @@ body {
   }
 }
 
+.service-icon-stroke {
+  stroke: currentColor;
+  stroke-width: 1.6;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+  transition: stroke 0.4s ease, opacity 0.4s ease;
+}
+
+.group:hover .service-icon-stroke,
+.group:focus-visible .service-icon-stroke {
+  opacity: 1;
+}
+
+.service-icon-stroke-active {
+  stroke: #ffffff;
+  opacity: 1;
+}
+
+.service-icon-fill {
+  fill: currentColor;
+  opacity: 0.55;
+}
+
+.service-icon-fill-active {
+  fill: #ffffff;
+  opacity: 1;
+}
+
+.service-icon-window {
+  fill: currentColor;
+  opacity: 0.22;
+}
+
+.service-icon-spin {
+  animation: service-spin 4.5s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.service-icon-spin-slow {
+  animation: service-spin 12s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.service-icon-draw,
+.service-icon-draw-delay {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 80;
+  animation: service-draw 2.4s ease-in-out infinite;
+}
+
+.service-icon-draw-delay {
+  animation-delay: 0.4s;
+}
+
+.service-icon-pulse {
+  animation: service-pulse 1.6s ease-in-out infinite;
+}
+
+.service-icon-blink,
+.service-icon-blink-delay {
+  animation: service-blink 1.4s ease-in-out infinite;
+}
+
+.service-icon-blink-delay {
+  animation-delay: 0.45s;
+}
+
+.service-icon-mod-b {
+  animation: service-lift 2.2s ease-in-out infinite;
+}
+
+.service-icon-mod-c {
+  animation: service-lift 2.2s ease-in-out infinite 0.35s;
+}
+
+.service-icon-bars {
+  stroke-dasharray: 40;
+  animation: service-draw 2.8s ease-in-out infinite;
+}
+
+.service-icon-windows .service-icon-window {
+  animation: service-blink 1.8s ease-in-out infinite;
+}
+
+.service-icon-windows .service-icon-window-2 {
+  animation-delay: 0.25s;
+}
+
+.service-icon-windows .service-icon-window-3 {
+  animation-delay: 0.5s;
+}
+
+@keyframes service-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes service-draw {
+  0%,
+  100% {
+    stroke-dashoffset: 90;
+  }
+  50% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes service-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes service-blink {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes service-lift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pin-layout {
     display: none !important;
@@ -169,7 +311,18 @@ body {
 
   .vcard,
   .hero-reveal,
-  .scroll-line {
+  .scroll-line,
+  .service-icon-spin,
+  .service-icon-spin-slow,
+  .service-icon-draw,
+  .service-icon-draw-delay,
+  .service-icon-pulse,
+  .service-icon-blink,
+  .service-icon-blink-delay,
+  .service-icon-mod-b,
+  .service-icon-mod-c,
+  .service-icon-bars,
+  .service-icon-windows .service-icon-window {
     animation: none !important;
     transition: none !important;
   }

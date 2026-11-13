@@ -19,12 +19,20 @@ export function CTA({
   primary,
   secondary,
   padTop = false,
+  title = contact.title,
+  supportNote = contact.supportNote,
+  support = `${contact.support} ${contact.handoff}`,
+  showSupportNote = true,
 }: {
   id?: string;
   primary: Action;
   secondary?: Action;
   /** Match bottom padding on top — used on /businesses */
   padTop?: boolean;
+  title?: string;
+  supportNote?: string;
+  support?: string;
+  showSupportNote?: boolean;
 }) {
   const root = useRef<HTMLElement>(null);
   const drawer = useRef<HTMLDivElement>(null);
@@ -131,31 +139,52 @@ export function CTA({
                   data-cta-part
                   className="font-display text-[clamp(1.9rem,4vw,3.25rem)] font-normal leading-[0.95] tracking-[-0.04em] [text-shadow:0_1px_18px_rgba(0,0,0,0.35)]"
                 >
-                  {contact.title}
+                  {title}
                 </h2>
+                {showSupportNote ? (
+                  <p
+                    data-cta-part
+                    className="type-eyebrow mt-4 tracking-[0.18em] text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,0.3)]"
+                  >
+                    {supportNote}
+                  </p>
+                ) : null}
                 <p
                   data-cta-part
-                  className="type-eyebrow mt-4 tracking-[0.18em] text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,0.3)]"
-                >
-                  {contact.supportNote}
-                </p>
-                <p
-                  data-cta-part
-                  className="type-body mt-3 w-full font-body leading-relaxed text-white/85 [text-shadow:0_1px_12px_rgba(0,0,0,0.28)]"
+                  className={cn(
+                    "type-body w-full font-body leading-relaxed text-white/85 [text-shadow:0_1px_12px_rgba(0,0,0,0.28)]",
+                    showSupportNote ? "mt-3" : "mt-4",
+                  )}
                   style={{ fontSize: 14 }}
                 >
-                  {contact.support} {contact.handoff}
+                  {support}
                 </p>
               </div>
-              <div data-cta-part className="flex shrink-0 flex-col gap-3 sm:flex-row md:justify-end">
+              <div
+                data-cta-part
+                className={cn(
+                  "flex w-full shrink-0 flex-col gap-3 sm:w-auto",
+                  secondary ? "md:min-w-[16.5rem]" : "sm:flex-row md:justify-end",
+                )}
+              >
+                <Button
+                  href={primary.href}
+                  variant="primary"
+                  external={primary.external}
+                  className={secondary ? "w-full" : undefined}
+                >
+                  {primary.label}
+                </Button>
                 {secondary ? (
-                  <Button href={secondary.href} variant="secondary" external={secondary.external}>
+                  <Button
+                    href={secondary.href}
+                    variant="secondary"
+                    external={secondary.external}
+                    className="w-full"
+                  >
                     {secondary.label}
                   </Button>
                 ) : null}
-                <Button href={primary.href} variant="primary" external={primary.external}>
-                  {primary.label}
-                </Button>
               </div>
             </div>
           </div>

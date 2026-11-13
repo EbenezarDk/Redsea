@@ -7,10 +7,11 @@ import { cn } from "@/lib/cn";
 
 type Props = {
   className?: string;
+  sizes?: string;
 };
 
 export const ProjectMediaTrack = forwardRef<HTMLDivElement, Props>(function ProjectMediaTrack(
-  { className },
+  { className, sizes = "40vw" },
   ref,
 ) {
   return (
@@ -33,7 +34,7 @@ export const ProjectMediaTrack = forwardRef<HTMLDivElement, Props>(function Proj
             >
               <AssetFrame
                 id={project.asset}
-                sizes="65vw"
+                sizes={sizes}
                 priority={index === 0}
                 className="bg-transparent"
               />
