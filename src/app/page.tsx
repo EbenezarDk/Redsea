@@ -26,9 +26,8 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
-      <Hero>
-        <About />
-      </Hero>
+      <Hero />
+      <About />
       <Capabilities />
       <BusinessPreview />
       <AtAGlance />
