@@ -53,7 +53,7 @@ export function Footer() {
             </a>
           </div>
         </div>
-        <div className="shell mt-4 flex flex-col gap-3 border-t border-white/10 py-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
+        <div className="shell mt-8 flex flex-col gap-3 border-t border-white/10 py-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © <span ref={year} className="inline-block min-w-[4ch]" /> Red Sea International.
           </p>
