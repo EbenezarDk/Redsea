@@ -30,7 +30,7 @@ export function BusinessAccordion({
   return (
     <ul
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-2 lg:flex-row lg:gap-1",
+        "flex flex-col gap-2 lg:h-[400px] lg:flex-row lg:gap-1",
         className,
       )}
       role="list"
@@ -48,7 +48,8 @@ export function BusinessAccordion({
               "vcard relative min-w-0 overflow-hidden border border-white/10 bg-charcoal lg:h-full lg:border-0",
               "lg:basis-0 lg:transition-[flex-grow] lg:duration-700 lg:ease-[cubic-bezier(0.77,0,0.18,1)]",
               open ? "lg:grow-[3.1]" : "lg:grow",
-              open ? "min-h-[28rem]" : "min-h-[4.5rem] lg:min-h-0",
+              // Mobile: open card expands; desktop: fixed 400px row, hover only changes width.
+              open ? "h-[400px]" : "h-[4.5rem] lg:h-full",
             )}
             onMouseEnter={() => {
               if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
@@ -79,14 +80,14 @@ export function BusinessAccordion({
               />
             </div>
 
-            <div className="relative z-10 flex h-full min-h-[inherit] flex-col lg:min-h-0">
+            <div className="relative z-10 flex h-full flex-col">
               {!open ? (
                 <button
                   type="button"
                   aria-expanded={false}
                   aria-controls={`${business.id}-details`}
                   onClick={() => setActive(business.id)}
-                  className="relative z-10 flex min-h-[4.5rem] w-full items-center px-5 py-4 text-left text-white outline-none lg:absolute lg:inset-0 lg:min-h-0 lg:items-end lg:justify-start lg:px-5 lg:pb-7 lg:pt-8"
+                  className="relative z-10 flex h-full min-h-[4.5rem] w-full items-center px-5 py-4 text-left text-white outline-none lg:absolute lg:inset-0 lg:items-end lg:justify-start lg:px-5 lg:pb-7 lg:pt-8"
                 >
                   <span className="whitespace-nowrap font-display text-[clamp(1.15rem,2.4vw,2.4rem)] font-normal leading-[0.95] tracking-[-0.03em] lg:[writing-mode:vertical-rl] lg:rotate-180">
                     {business.title}
@@ -97,7 +98,7 @@ export function BusinessAccordion({
               <div
                 id={`${business.id}-details`}
                 className={cn(
-                  "relative z-10 flex h-full flex-col justify-end p-6 transition-[opacity,transform] duration-500 md:p-8 lg:p-10",
+                  "relative z-10 flex h-full flex-col justify-end overflow-hidden p-6 transition-[opacity,transform] duration-500 md:p-8 lg:p-10",
                   open
                     ? "pointer-events-auto opacity-100"
                     : "pointer-events-none absolute inset-0 opacity-0 lg:translate-y-2",
@@ -108,9 +109,7 @@ export function BusinessAccordion({
                 <h3 className="max-w-xl font-display text-[clamp(1.15rem,2.4vw,2.4rem)] font-normal leading-[0.95] tracking-[-0.03em] text-white">
                   {business.title}
                 </h3>
-                <p
-                  className="type-body mt-4 max-w-xl font-body leading-relaxed text-white/85"
-                >
+                <p className="type-body mt-4 max-w-xl font-body leading-relaxed text-white/85">
                   {business.body}
                 </p>
                 <ul className="mt-5 flex max-w-2xl flex-wrap gap-2">

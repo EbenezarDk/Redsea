@@ -8,9 +8,9 @@ export function BusinessPreview() {
     <ScrollScene
       id="businesses"
       labelledBy="businesses-title"
-      className="relative flex min-h-[100svh] flex-col bg-charcoal text-white lg:min-h-[100svh]"
+      className="relative flex flex-col bg-charcoal text-white"
     >
-      <div className="shell flex min-h-[100svh] flex-1 flex-col pb-6 pt-[max(5.5rem,calc(env(safe-area-inset-top)+4.5rem))] lg:pb-8">
+      <div className="shell flex flex-col pb-10 pt-[max(5.5rem,calc(env(safe-area-inset-top)+4.5rem))] lg:pb-14">
         <div className="shrink-0 pb-3 md:pb-4">
           <div className="flex max-w-4xl flex-col gap-[6px]">
             <Eyebrow light rule={false}>
@@ -31,7 +31,7 @@ export function BusinessPreview() {
             </p>
           </div>
         </div>
-        <BusinessAccordion className="min-h-0 flex-1 pt-2 lg:min-h-[28rem]" />
+        <BusinessAccordion className="mt-2" />
       </div>
     </ScrollScene>
   );
