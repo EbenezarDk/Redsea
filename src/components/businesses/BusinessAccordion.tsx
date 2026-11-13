@@ -30,7 +30,7 @@ export function BusinessAccordion({
   return (
     <ul
       className={cn(
-        "flex flex-col gap-2 lg:h-[400px] lg:flex-row lg:gap-1",
+        "flex flex-col gap-2 lg:h-[500px] lg:flex-row lg:gap-1",
         className,
       )}
       role="list"
@@ -48,8 +48,8 @@ export function BusinessAccordion({
               "vcard relative min-w-0 overflow-hidden border border-white/10 bg-charcoal lg:h-full lg:border-0",
               "lg:basis-0 lg:transition-[flex-grow] lg:duration-700 lg:ease-[cubic-bezier(0.77,0,0.18,1)]",
               open ? "lg:grow-[3.1]" : "lg:grow",
-              // Mobile: open card expands; desktop: fixed 400px row, hover only changes width.
-              open ? "h-[400px]" : "h-[4.5rem] lg:h-full",
+              // Mobile: open card expands; desktop: fixed 500px row, hover only changes width.
+              open ? "h-[500px]" : "h-[4.5rem] lg:h-full",
             )}
             onMouseEnter={() => {
               if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {

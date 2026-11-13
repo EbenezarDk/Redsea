@@ -136,13 +136,6 @@ export function Hero() {
         </div>
       </div>
 
-      <a
-        href="#about"
-        className="absolute bottom-6 right-[var(--shell-gutter)] z-20 flex flex-col items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/80"
-      >
-        Scroll
-        <span className="scroll-line block h-12 w-px bg-gradient-to-b from-rsi to-transparent" />
-      </a>
     </section>
   );
 }
