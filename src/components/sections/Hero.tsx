@@ -10,8 +10,11 @@ import { cn } from "@/lib/cn";
 /** Original upload is preserved. Settled frame matches the lit modular floor behind hero copy. */
 const HERO_VIDEO_SRC = "/videos/hero-approach-scrub.mp4";
 const SETTLE_RATIO = 3.35 / 7.85;
+/** Wall-clock budget for the opening approach. */
 const INTRO_PLAY_MS = 2000;
 const INTRO_PLAYBACK_RATE = 2;
+/** Video-seconds before settle where playback eases down (avoids a hard cut). */
+const INTRO_SLOW_WINDOW = 0.55;
 
 function setHeaderTone(tone: "hero" | null) {
   const root = document.documentElement;
@@ -88,16 +91,19 @@ export function Hero() {
     }
 
     let cancelled = false;
-    let playTimer = 0;
     let unlockTimer = 0;
+    let failsafeTimer = 0;
+    let raf = 0;
+    let finishing = false;
 
-    const finishIntro = () => {
+    const settleTime = () => {
+      if (!Number.isFinite(video.duration) || video.duration <= 0) return 0;
+      return Math.min(video.duration * SETTLE_RATIO, Math.max(0, video.duration - 0.05));
+    };
+
+    const revealCopy = () => {
       if (cancelled) return;
-      video.pause();
-      video.playbackRate = 1;
-      seekSettle();
       setShowCopy(true);
-      // Brief beat so copy can paint before scroll unlocks.
       unlockTimer = window.setTimeout(() => {
         if (cancelled) return;
         unlockScroll();
@@ -105,19 +111,66 @@ export function Hero() {
       }, 420);
     };
 
+    const softStop = () => {
+      if (cancelled || finishing) return;
+      finishing = true;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+      window.clearTimeout(failsafeTimer);
+
+      const settle = settleTime();
+      video.pause();
+      video.playbackRate = 1;
+      // Only nudge if we're more than a frame off — never hard-jump from far away.
+      if (settle > 0 && Math.abs(video.currentTime - settle) > 1 / 24) {
+        video.currentTime = settle;
+      }
+      revealCopy();
+    };
+
     const startIntro = () => {
       if (cancelled) return;
       lockScroll();
+      finishing = false;
       video.currentTime = 0;
       video.playbackRate = INTRO_PLAYBACK_RATE;
+
       const play = video.play();
       if (play && typeof play.catch === "function") {
         play.catch(() => {
-          // Autoplay blocked — still reveal copy and unlock.
-          finishIntro();
+          softStop();
         });
       }
-      playTimer = window.setTimeout(finishIntro, INTRO_PLAY_MS);
+
+      const tick = () => {
+        if (cancelled || finishing) return;
+        const settle = settleTime();
+        if (settle <= 0) {
+          raf = requestAnimationFrame(tick);
+          return;
+        }
+
+        const remaining = settle - video.currentTime;
+        if (remaining <= 0.03) {
+          softStop();
+          return;
+        }
+
+        if (remaining < INTRO_SLOW_WINDOW) {
+          // Ease rate 2 → ~0.28 so the last approach eases into the settle frame.
+          const p = Math.max(0, Math.min(1, remaining / INTRO_SLOW_WINDOW));
+          const eased = p * p;
+          video.playbackRate = 0.28 + (INTRO_PLAYBACK_RATE - 0.28) * eased;
+        } else {
+          video.playbackRate = INTRO_PLAYBACK_RATE;
+        }
+
+        raf = requestAnimationFrame(tick);
+      };
+
+      raf = requestAnimationFrame(tick);
+      // Safety: never leave scroll locked if rAF/metadata stalls.
+      failsafeTimer = window.setTimeout(softStop, INTRO_PLAY_MS + 800);
     };
 
     if (video.readyState >= 2) startIntro();
@@ -136,7 +189,8 @@ export function Hero() {
 
     return () => {
       cancelled = true;
-      window.clearTimeout(playTimer);
+      if (raf) cancelAnimationFrame(raf);
+      window.clearTimeout(failsafeTimer);
       window.clearTimeout(unlockTimer);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("keydown", blockScrollKeys);
