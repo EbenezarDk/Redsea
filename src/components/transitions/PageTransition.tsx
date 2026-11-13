@@ -10,7 +10,7 @@ import {
   useState,
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { gsap } from "@/lib/motion";
+import { gsap, ScrollTrigger } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 type TransitionContextValue = {
@@ -43,99 +43,54 @@ function getContent() {
   return document.getElementById("content");
 }
 
-const CLIP_CLOSED = "inset(0 0 100% 0)";
-const CLIP_OPEN = "inset(0 0 0 0)";
-const CLIP_EXIT = "inset(100% 0 0 0)";
+function clearContentStyles() {
+  const content = getContent();
+  if (!content) return;
+  gsap.set(content, { clearProps: "opacity,transform,visibility" });
+  content.style.opacity = "";
+  content.style.visibility = "";
+  content.style.transform = "";
+}
+
+/**
+ * Home ↔ Businesses must hard-navigate. Soft App Router swaps leave Lenis/GSAP
+ * pin-spacers and #content opacity/transform in a broken state on large/2K screens
+ * (black page until reload, crushed sections, white gaps).
+ */
+function hardNavigate(href: string) {
+  window.location.assign(href);
+}
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const reduced = useReducedMotion();
-  const overlayRef = useRef<HTMLDivElement>(null);
   const lockRef = useRef(false);
-  const pendingPath = useRef<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const playEnter = useCallback(() => {
-    const overlay = overlayRef.current;
-    const content = getContent();
-    if (!overlay) return;
-
-    if (reduced) {
-      gsap.set(overlay, {
-        autoAlpha: 0,
-        clipPath: CLIP_CLOSED,
-        pointerEvents: "none",
-      });
-      if (content) gsap.set(content, { clearProps: "opacity,transform" });
-      lockRef.current = false;
-      pendingPath.current = null;
-      setIsTransitioning(false);
-      return;
-    }
-
-    const heading = content?.querySelector<HTMLElement>("h1");
-    const tl = gsap.timeline({
-      defaults: { ease: "power3.out" },
-      onComplete: () => {
-        lockRef.current = false;
-        pendingPath.current = null;
-        setIsTransitioning(false);
-        gsap.set(overlay, { pointerEvents: "none", autoAlpha: 0, clipPath: CLIP_CLOSED });
-      },
-    });
-
-    gsap.set(overlay, { autoAlpha: 1, clipPath: CLIP_OPEN, pointerEvents: "auto" });
-    if (content) gsap.set(content, { opacity: 0, y: 0 });
-    if (heading) gsap.set(heading, { opacity: 0, y: 45 });
-
-    tl.to(overlay, {
-      clipPath: CLIP_EXIT,
-      duration: 0.55,
-      ease: "power3.inOut",
-    }).set(overlay, { autoAlpha: 0, clipPath: CLIP_CLOSED });
-
-    if (content) {
-      tl.to(
-        content,
-        {
-          opacity: 1,
-          duration: 0.4,
-        },
-        "-=0.15",
-      );
-    }
-
-    if (heading) {
-      tl.to(
-        heading,
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.55,
-        },
-        "-=0.35",
-      );
-    }
-  }, [reduced]);
-
-  useEffect(() => {
-    if (!pendingPath.current) return;
-    if (normalizePath(pathname) !== normalizePath(pendingPath.current)) return;
-    // Wait a frame so the new route content is mounted.
-    const frame = window.requestAnimationFrame(() => playEnter());
-    return () => window.cancelAnimationFrame(frame);
-  }, [pathname, playEnter]);
-
-  useEffect(() => {
-    const overlay = overlayRef.current;
-    if (!overlay) return;
-    gsap.set(overlay, {
-      autoAlpha: 0,
-      clipPath: CLIP_CLOSED,
-      pointerEvents: "none",
-    });
+  const revealContent = useCallback(() => {
+    clearContentStyles();
+    lockRef.current = false;
+    setIsTransitioning(false);
+    requestAnimationFrame(() => ScrollTrigger.refresh());
   }, []);
+
+  // Always ensure #content is visible after route paints (soft nav + hydration).
+  useEffect(() => {
+    clearContentStyles();
+    lockRef.current = false;
+    const frame = window.requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname]);
+
+  // Failsafe if something locks the shell mid-transition.
+  useEffect(() => {
+    if (!isTransitioning) return;
+    const timer = window.setTimeout(() => {
+      revealContent();
+    }, 1200);
+    return () => window.clearTimeout(timer);
+  }, [isTransitioning, revealContent]);
 
   const navigate = useCallback(
     (href: string) => {
@@ -155,46 +110,14 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      if (!isCinematicPair(current, targetPath) || reduced) {
-        router.push(href);
+      if (isCinematicPair(current, targetPath)) {
+        lockRef.current = true;
+        setIsTransitioning(true);
+        hardNavigate(href);
         return;
       }
 
-      const overlay = overlayRef.current;
-      const content = getContent();
-      if (!overlay || !content) {
-        router.push(href);
-        return;
-      }
-
-      lockRef.current = true;
-      pendingPath.current = targetPath;
-      setIsTransitioning(true);
-
-      gsap.timeline({
-        defaults: { ease: "power3.inOut" },
-        onComplete: () => {
-          router.push(href);
-        },
-      })
-        .to(content, {
-          opacity: 0,
-          y: -35,
-          duration: 0.35,
-        })
-        .fromTo(
-          overlay,
-          {
-            autoAlpha: 1,
-            clipPath: CLIP_CLOSED,
-            pointerEvents: "auto",
-          },
-          {
-            clipPath: CLIP_OPEN,
-            duration: 0.5,
-          },
-          "-=0.05",
-        );
+      router.push(href);
     },
     [pathname, reduced, router],
   );
@@ -204,14 +127,5 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     [navigate, isTransitioning],
   );
 
-  return (
-    <TransitionContext.Provider value={value}>
-      {children}
-      <div
-        ref={overlayRef}
-        aria-hidden
-        className="pointer-events-none fixed inset-0 z-[90] bg-[#171717] opacity-0"
-      />
-    </TransitionContext.Provider>
-  );
+  return <TransitionContext.Provider value={value}>{children}</TransitionContext.Provider>;
 }

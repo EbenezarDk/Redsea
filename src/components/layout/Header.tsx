@@ -267,23 +267,23 @@ export function Header() {
         return;
       }
 
-      // From Our Businesses → Home: hard reload for a fresh homepage start.
+      // Home ↔ Businesses: always hard-navigate so Lenis/GSAP remount cleanly
+      // (soft swaps caused black #content + broken pin spacers on 2K).
       if (pathname.startsWith("/businesses") && toHome) {
         event.preventDefault();
         setMenuOpen(false);
         setContactOpen(false);
-        // Intentional full document navigation so Lenis/GSAP remount cleanly.
-        // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- hard reload required
-        window.location.href = "/";
+        if (transition) transition.navigate("/");
+        else window.location.assign("/");
         return;
       }
 
-      // Home → Businesses keeps the cinematic transition.
-      if (pathname === "/" && path.startsWith("/businesses") && transition) {
+      if (pathname === "/" && path.startsWith("/businesses")) {
         event.preventDefault();
         setMenuOpen(false);
         setContactOpen(false);
-        transition.navigate(href);
+        if (transition) transition.navigate(href);
+        else window.location.assign(href);
         return;
       }
 

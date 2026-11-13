@@ -22,7 +22,7 @@ export function BusinessesHero() {
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/70 to-charcoal/35"
       />
 
-      <div className="shell relative z-10 flex min-h-[100svh] w-full flex-col items-center justify-center py-20 pt-[max(5.5rem,calc(env(safe-area-inset-top)+4.5rem))] md:py-28 lg:py-32">
+      <div className="shell relative z-10 flex min-h-[min(100svh,920px)] w-full flex-col items-center justify-center py-20 pt-[max(5.5rem,calc(env(safe-area-inset-top)+4.5rem))] md:py-28 lg:min-h-[100svh] lg:py-32">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-[6px] text-center">
           <TextAnimate
             animation="fadeIn"

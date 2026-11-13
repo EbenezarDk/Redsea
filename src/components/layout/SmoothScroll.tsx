@@ -115,6 +115,13 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    // Drop stale pin spacers from the previous route before measuring the new one.
+    ScrollTrigger.getAll().forEach((trigger) => {
+      if (!document.documentElement.contains(trigger.trigger as Node | null)) {
+        trigger.kill();
+      }
+    });
+
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hash = window.location.hash;
     const timer = window.setTimeout(() => {
@@ -131,7 +138,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         jumpToTop();
       }
       ScrollTrigger.refresh();
-    }, 60);
+    }, 80);
     return () => window.clearTimeout(timer);
   }, [pathname]);
 

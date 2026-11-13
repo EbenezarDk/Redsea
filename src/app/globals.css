@@ -50,7 +50,9 @@
 
 @media (min-width: 1440px) {
   :root {
-    --shell-gutter: max(4rem, calc((100vw - 1440px) / 2));
+    /* Cap side gutters on ultra-wide / 2K+ so the shell stays centered without
+       forcing awkward empty bands from over-large calculated margins. */
+    --shell-gutter: clamp(4rem, calc((100vw - 1440px) / 2), 8rem);
   }
 }
 
@@ -86,6 +88,7 @@ body {
 
 .shell {
   width: min(1440px, calc(100% - (var(--shell-gutter) * 2)));
+  max-width: 1440px;
   margin-inline: auto;
 }
 

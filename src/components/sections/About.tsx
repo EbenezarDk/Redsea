@@ -91,14 +91,14 @@ export function About() {
 
   return (
     <ScrollScene id="about" ref={root} labelledBy="about-title" className="bg-paper">
-      <div className="shell grid gap-12 py-24 md:py-32 lg:grid-cols-12 lg:gap-16 lg:py-40">
+      <div className="shell grid gap-12 py-20 md:py-28 lg:grid-cols-12 lg:gap-16 lg:py-32">
         <div className="lg:sticky lg:top-28 lg:col-span-5 lg:self-start">
           <div className="flex flex-col gap-[6px]">
             <Eyebrow rule={false}>{about.eyebrow}</Eyebrow>
             <h2
               id="about-title"
               className="hero-headline font-display font-normal"
-              style={{ fontSize: 52, marginTop: 0, marginBottom: 0 }}
+              style={{ marginTop: 0, marginBottom: 0 }}
             >
               {about.title}
             </h2>
@@ -148,7 +148,6 @@ export function About() {
                     data-value={value}
                     data-suffix={suffix}
                     className="hero-headline font-display font-normal tabular-nums"
-                    style={{ fontSize: 52 }}
                   >
                     0{suffix}
                   </span>

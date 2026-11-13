@@ -132,7 +132,11 @@ export function Hero({ children }: { children?: ReactNode }) {
     };
 
     const bindStory = (end: string) => {
-      aboutSlot.style.marginTop = "-100svh";
+      // Match negative pull to the real pin height (svh can drift on 2K/scaled displays).
+      const pullAbout = () => {
+        aboutSlot.style.marginTop = `${-Math.round(pin.getBoundingClientRect().height)}px`;
+      };
+      pullAbout();
       gsap.set(aboutSlot, { opacity: 0, y: 0, pointerEvents: "none" });
       gsap.set(videoLayer, { autoAlpha: 1 });
       pin.style.backgroundColor = "";
@@ -175,12 +179,17 @@ export function Hero({ children }: { children?: ReactNode }) {
           start: "top top",
           end,
           pin: true,
-          pinType: "fixed",
+          // transform pins play better with Lenis on large/2K viewports than fixed
+          pinType: "transform",
           scrub: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onRefreshInit: pullAbout,
           onUpdate: (self) => sync(self.progress),
-          onRefresh: (self) => sync(self.progress),
+          onRefresh: (self) => {
+            pullAbout();
+            sync(self.progress);
+          },
           onLeave: () => {
             gsap.set(aboutSlot, { y: 0, opacity: 1, pointerEvents: "auto" });
             gsap.set(videoLayer, { autoAlpha: 0 });
@@ -229,7 +238,8 @@ export function Hero({ children }: { children?: ReactNode }) {
         video.removeEventListener("loadedmetadata", arm);
         aboutSlot.style.marginTop = "";
         pin.style.backgroundColor = "";
-        gsap.set(shell, { clearProps: "transform" });
+        gsap.set(aboutSlot, { clearProps: "all" });
+        gsap.set([shell, copy, cue, scrim, videoLayer], { clearProps: "all" });
         setHeaderTone(null);
         timeline.scrollTrigger?.kill();
         timeline.kill();
