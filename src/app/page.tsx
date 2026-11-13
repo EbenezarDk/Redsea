@@ -7,6 +7,7 @@ import { CTA } from "@/components/sections/CTA";
 import { Hero } from "@/components/sections/Hero";
 import { Newsroom } from "@/components/sections/Newsroom";
 import { ProjectProof } from "@/components/sections/ProjectProof";
+import { QuickLinks } from "@/components/sections/QuickLinks";
 import { contact, officialContactUrl, organizationJsonLd, seo } from "@/data/site-content";
 
 export const metadata: Metadata = {
@@ -28,11 +29,12 @@ export default function HomePage() {
       <Hero>
         <About />
       </Hero>
-      <AtAGlance />
       <Capabilities />
       <BusinessPreview />
+      <AtAGlance />
       <ProjectProof />
       <Newsroom />
+      <QuickLinks />
       <CTA
         padTop
         primary={{

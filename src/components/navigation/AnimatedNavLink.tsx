@@ -124,8 +124,7 @@ export function AnimatedNavLink({
     return (
       <span
         className={sharedClass}
-        aria-disabled="true"
-        role="presentation"
+        title="Coming soon"
         onPointerEnter={rollReel}
         onPointerLeave={resetReel}
       >

@@ -33,7 +33,7 @@ export function RegionFilter({ options, value, onChange, className }: RegionFilt
               "shrink-0 border px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.14em] transition-colors duration-300",
               active
                 ? "border-rsi bg-rsi text-white"
-                : "border-white/20 bg-transparent text-white/65 hover:border-white/40 hover:text-white",
+                : "border-charcoal/20 bg-transparent text-charcoal/65 hover:border-charcoal/40 hover:text-charcoal",
             )}
           >
             {option.label}

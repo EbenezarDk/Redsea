@@ -17,7 +17,7 @@ export function Footer() {
       <div className="shell grid gap-12 py-16 md:py-20 lg:grid-cols-12">
         <div className="lg:col-span-6">
           <Logo imageClassName="h-[80px]" />
-          <p className="mt-6 max-w-xl text-sm leading-relaxed text-white/75">{brandStatement}</p>
+          <p className="type-body mt-6 max-w-xl font-body leading-relaxed text-white/75">{brandStatement}</p>
         </div>
         <nav aria-label="Footer" className="flex flex-col gap-3 lg:col-span-3">
           {nav.map((item) =>

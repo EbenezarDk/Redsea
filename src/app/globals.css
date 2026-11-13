@@ -13,7 +13,7 @@
 }
 
 .hero-headline {
-  font-size: 52px !important;
+  font-size: clamp(1.75rem, calc(0.65rem + 4.2vw), 3.25rem) !important;
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
@@ -26,8 +26,10 @@
 }
 
 .type-body {
+  font-family: var(--font-body-family), "Segoe UI", Helvetica, Arial, sans-serif;
   font-size: 14px !important;
   font-weight: 400;
+  line-height: 1.625;
 }
 
 :root {

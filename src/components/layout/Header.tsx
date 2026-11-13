@@ -39,6 +39,7 @@ function isLightBackground(color: string) {
 const LIGHT_SECTION_IDS = new Set([
   "about",
   "capabilities",
+  "at-a-glance",
   "projects",
   "newsroom",
   "services",
@@ -46,7 +47,7 @@ const LIGHT_SECTION_IDS = new Set([
   "contact",
 ]);
 const HERO_SECTION_IDS = new Set(["top", "businesses-intro"]);
-const DARK_SECTION_IDS = new Set(["businesses", "at-a-glance"]);
+const DARK_SECTION_IDS = new Set(["businesses", "quick-links"]);
 
 function findSectionUnderHeader(): HTMLElement | null {
   if (typeof document === "undefined") return null;
@@ -271,7 +272,9 @@ export function Header() {
         event.preventDefault();
         setMenuOpen(false);
         setContactOpen(false);
-        window.location.assign("/");
+        // Intentional full document navigation so Lenis/GSAP remount cleanly.
+        // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- hard reload required
+        window.location.href = "/";
         return;
       }
 

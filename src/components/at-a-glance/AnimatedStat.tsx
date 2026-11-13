@@ -70,22 +70,22 @@ export function AnimatedStat({
   return (
     <div
       className={cn(
-        "flex h-full min-h-0 flex-col justify-center border-t border-white/15 pt-5",
+        "flex h-full min-h-0 flex-col justify-center border-t border-charcoal/15 pt-5",
         className,
       )}
     >
       <span className="sr-only">{stat.srLabel}</span>
       <p
         aria-hidden
-        className="font-display font-normal leading-none tracking-[-0.03em] text-white tabular-nums"
+        className="font-display font-normal leading-none tracking-[-0.03em] text-rsi tabular-nums"
         style={{ fontSize: 52 }}
       >
         <span ref={valueRef}>{reduced ? formatQuantity(stat, stat.value) : formatQuantity(stat, 0)}</span>
       </p>
-      <p aria-hidden className="mt-3 text-sm font-medium leading-snug text-white">
+      <p aria-hidden className="type-body mt-3 font-body font-medium leading-snug text-charcoal">
         {stat.label}
       </p>
-      <p aria-hidden className="mt-1 text-sm leading-snug text-white/55">
+      <p aria-hidden className="type-body mt-1 font-body leading-snug text-graphite">
         {stat.support}
       </p>
     </div>

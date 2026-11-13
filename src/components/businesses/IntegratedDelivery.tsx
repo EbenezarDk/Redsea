@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 import { businessesPage } from "@/data/site-content";
-import { gsap, registerMotion } from "@/lib/motion";
+import { gsap, registerMotion, ScrollTrigger } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 const phases = businessesPage.delivery.phases;
@@ -33,7 +33,7 @@ export function IntegratedDelivery() {
       const apply = (progress: number) => {
         gsap.set(fill, { scaleX: progress });
         nodes.forEach((node, index) => {
-          const threshold = index / (nodes.length - 1);
+          const threshold = nodes.length <= 1 ? 0 : index / (nodes.length - 1);
           const active = progress >= threshold - 0.001;
           gsap.set(node, {
             opacity: 1,
@@ -42,22 +42,16 @@ export function IntegratedDelivery() {
         });
       };
 
-      const story = gsap.to(
-        {},
-        {
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 72%",
-            end: "bottom 62%",
-            scrub: true,
-            onUpdate: (self) => apply(self.progress),
-            onRefresh: (self) => apply(self.progress),
-          },
-        },
-      );
+      const trigger = ScrollTrigger.create({
+        trigger: section,
+        start: "top 72%",
+        end: "bottom 62%",
+        scrub: true,
+        onUpdate: (self) => apply(self.progress),
+        onRefresh: (self) => apply(self.progress),
+      });
 
-      apply(story.scrollTrigger?.progress ?? 0);
+      apply(trigger.progress);
     }, section);
 
     return () => ctx.revert();
@@ -119,7 +113,7 @@ export function IntegratedDelivery() {
                 <span className="whitespace-nowrap font-display text-[clamp(1.2rem,2.4vw,2.4rem)] font-normal tracking-[-0.03em]">
                   {phase.label}
                 </span>
-                <p className="mt-2 whitespace-nowrap text-sm leading-relaxed text-graphite">
+                <p className="type-body mt-2 whitespace-nowrap font-body leading-relaxed text-graphite">
                   {phase.body}
                 </p>
               </li>

@@ -106,7 +106,7 @@ export const businesses = [
     preview: "Modular construction, temporary facilities and permanent building solutions.",
     body: "We design and manufacture modular building systems for workforce accommodation, offices, hospitality and a range of temporary and permanent uses.",
     paragraph:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+      "We design and manufacture modular building systems for workforce accommodation, offices, hospitality and a range of temporary and permanent uses.",
     label: "Modular Solutions",
     tags: [
       "Modular construction",
@@ -124,7 +124,7 @@ export const businesses = [
     preview: "Hard and soft FM, catering, hospitality and camp operations.",
     body: "We support daily facility performance and occupant wellbeing through technical maintenance, soft services, catering, hospitality and integrated camp management.",
     paragraph:
-      "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.",
+      "We support daily facility performance and occupant wellbeing through technical maintenance, soft services, catering, hospitality and integrated camp management.",
     label: "Facilities & Operations",
     tags: ["Hard FM", "Soft FM", "Catering", "Camp management", "Life support"],
     asset: "facilities" as AssetId,
@@ -137,7 +137,7 @@ export const businesses = [
     preview: "Mechanical, electrical, plumbing and infrastructure delivery.",
     body: "Our MEP and infrastructure capabilities support complex building systems and integrated project delivery.",
     paragraph:
-      "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+      "Our MEP and infrastructure capabilities support complex building systems and integrated project delivery.",
     label: "MEP Contracting",
     tags: [
       "Mechanical works",
@@ -156,7 +156,7 @@ export const businesses = [
     preview: "Hospitality, residential and commercial development opportunities.",
     body: "Our development activities focus on opportunities in hospitality, residential and commercial facilities.",
     paragraph:
-      "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur.",
+      "Our development activities focus on opportunities in hospitality, residential and commercial facilities.",
     label: "Development",
     tags: ["Hospitality", "Residential", "Commercial"],
     asset: "realEstate" as AssetId,
@@ -169,7 +169,7 @@ export const businesses = [
     preview: "Strategic investments, acquisitions and partnerships.",
     body: "We evaluate investment and partnership opportunities aligned with the Group’s capabilities and long-term direction.",
     paragraph:
-      "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur blandit tempus porttitor.",
+      "We evaluate investment and partnership opportunities aligned with the Group’s capabilities and long-term direction.",
     label: "Investment",
     tags: ["Investments", "M&A", "Strategic partnerships"],
     asset: "investment" as AssetId,
@@ -227,9 +227,9 @@ export const sectorsSection = {
 export const contact = {
   title: "Let’s Build the Right Solution",
   support: "Connect with Red Sea International to discuss your project requirements.",
-  supportNote: "Editorial proposal",
+  supportNote: "Official contact",
   handoff:
-    "Inquiries are handled on the official Red Sea International contact page. This prototype does not submit a form.",
+    "Inquiries are handled on the official Red Sea International contact page.",
   homeLabel: "Contact RSI",
   discussLabel: "Discuss Your Project",
   teamLabel: "Contact Our Team",
@@ -290,10 +290,10 @@ export const businessesPage = {
     bodySecondary:
       "Engagement models are tailored to each client, location and scope.",
     phases: [
-      { label: "Design", body: "Lorem ipsum dolor." },
-      { label: "Build", body: "Sit amet consectetur." },
-      { label: "Operate", body: "Adipiscing elit sed." },
-      { label: "Maintain", body: "Do eiusmod tempor." },
+      { label: "Design", body: "Factory-produced modular solutions." },
+      { label: "Build", body: "Integrated planning and installation." },
+      { label: "Operate", body: "Hard and soft FM and life support." },
+      { label: "Maintain", body: "Ongoing performance and site services." },
     ],
   },
 } as const;

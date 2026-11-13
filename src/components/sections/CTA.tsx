@@ -144,7 +144,7 @@ export function CTA({
                 {showSupportNote ? (
                   <p
                     data-cta-part
-                    className="type-eyebrow mt-4 tracking-[0.18em] text-white/90 [text-shadow:0_1px_12px_rgba(0,0,0,0.3)]"
+                    className="type-eyebrow mt-4 tracking-[0.18em] text-white [text-shadow:0_1px_12px_rgba(0,0,0,0.3)]"
                   >
                     {supportNote}
                   </p>
@@ -152,7 +152,7 @@ export function CTA({
                 <p
                   data-cta-part
                   className={cn(
-                    "type-body w-full font-body leading-relaxed text-white/85 [text-shadow:0_1px_12px_rgba(0,0,0,0.28)]",
+                    "type-body w-full font-body leading-relaxed text-white [text-shadow:0_1px_12px_rgba(0,0,0,0.28)]",
                     showSupportNote ? "mt-3" : "mt-4",
                   )}
                   style={{ fontSize: 14 }}

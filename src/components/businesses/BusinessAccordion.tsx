@@ -88,7 +88,7 @@ export function BusinessAccordion({
                   onClick={() => setActive(business.id)}
                   className="relative z-10 flex min-h-[4.5rem] w-full items-center px-5 py-4 text-left text-white outline-none lg:absolute lg:inset-0 lg:min-h-0 lg:items-end lg:justify-start lg:px-5 lg:pb-7 lg:pt-8"
                 >
-                  <span className="whitespace-nowrap font-display text-[clamp(0.98rem,1.15vw,1.2rem)] font-normal leading-none tracking-[-0.03em] lg:[writing-mode:vertical-rl] lg:rotate-180">
+                  <span className="whitespace-nowrap font-display text-[clamp(1.15rem,2.4vw,2.4rem)] font-normal leading-[0.95] tracking-[-0.03em] lg:[writing-mode:vertical-rl] lg:rotate-180">
                     {business.title}
                   </span>
                 </button>
@@ -109,8 +109,7 @@ export function BusinessAccordion({
                   {business.title}
                 </h3>
                 <p
-                  className="mt-4 max-w-xl font-body leading-relaxed text-white/85"
-                  style={{ fontSize: 14 }}
+                  className="type-body mt-4 max-w-xl font-body leading-relaxed text-white/85"
                 >
                   {business.body}
                 </p>

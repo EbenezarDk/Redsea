@@ -54,8 +54,8 @@ export function ProjectDetailOverlay({ project, onClose }: Props) {
           <h3 id={titleId} className="mt-3 font-display text-3xl font-normal tracking-[-0.03em]">
             {project.name}
           </h3>
-          <p className="mt-4 text-base leading-relaxed text-white/75">{project.description}</p>
-          <ul className="mt-6 space-y-2 border-t border-white/10 pt-5 text-sm text-white/70">
+          <p className="type-body mt-4 font-body leading-relaxed text-white/75">{project.description}</p>
+          <ul className="type-body mt-6 space-y-2 border-t border-white/10 pt-5 font-body text-white/70">
             {project.details.map((line) => (
               <li key={line} className="flex gap-3">
                 <span aria-hidden className="mt-2 h-px w-4 shrink-0 bg-rsi" />

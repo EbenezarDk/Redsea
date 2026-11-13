@@ -5,7 +5,7 @@ import { geoEquirectangular, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
 import type { Topology, GeometryCollection } from "topojson-specification";
 import type { FeatureCollection, Feature, Geometry } from "geojson";
-import countriesTopology from "world-atlas/countries-110m.json";
+import countriesTopology from "@/data/geo/countries-110m.json";
 import {
   footprintByNumericId,
   type FootprintCountry,
@@ -126,8 +126,8 @@ export function WorldFootprintMap({
     const inRegion = isInActiveRegion(meta);
     const focused = focusIso === id;
 
-    if (!meta || !revealed) return "#2a2a2a";
-    if (!inRegion) return "#3a3a3a";
+    if (!meta || !revealed) return "#e4e2de";
+    if (!inRegion) return "#cfcbc6";
     if (focused) return "#f0243f";
     return "#d71932";
   }
@@ -222,24 +222,6 @@ export function WorldFootprintMap({
             );
           })}
         </g>
-        {/* Symbolic region connectors — decorative only */}
-        {revealProgress > 0.72 && region === "all" ? (
-          <g opacity={0.22} stroke="#d71932" strokeWidth={0.8} fill="none">
-            {experienceFeatures.slice(0, 4).map(({ feature: feat }, i, arr) => {
-              if (i === arr.length - 1) return null;
-              const a = path.centroid(feat);
-              const b = path.centroid(arr[i + 1].feature);
-              if (!a || !b || Number.isNaN(a[0]) || Number.isNaN(b[0])) return null;
-              return (
-                <path
-                  key={`link-${i}`}
-                  d={`M${a[0]},${a[1]} L${b[0]},${b[1]}`}
-                  strokeDasharray="3 5"
-                />
-              );
-            })}
-          </g>
-        ) : null}
       </svg>
       <CountryTooltip {...tooltip} />
     </div>

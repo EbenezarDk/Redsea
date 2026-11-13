@@ -84,16 +84,13 @@ function NewsPreviewDrawer({
             </div>
             <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-6 md:p-8">
               <p className="type-eyebrow text-rsi">{article.category}</p>
-              <p className="mt-2 text-[0.72rem] uppercase tracking-[0.16em] text-graphite">
-                {article.dateLabel}
-              </p>
               <h3
                 id={titleId}
                 className="mt-4 font-display text-[clamp(1.5rem,3vw,2.2rem)] font-normal leading-[0.95] tracking-[-0.03em]"
               >
                 {article.title}
               </h3>
-              <p className="mt-4 text-sm leading-relaxed text-graphite">{article.excerpt}</p>
+              <p className="type-body mt-4 font-body leading-relaxed text-graphite">{article.excerpt}</p>
               <p className="mt-6 border-t border-charcoal/15 pt-4 text-[0.72rem] leading-relaxed text-graphite">
                 {rsiNewsSection.previewNote}
               </p>
@@ -161,9 +158,6 @@ function NewsCard({
         <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-graphite transition-colors duration-[400ms] group-hover:text-rsi">
           {item.category}
         </p>
-        <p className="mt-1 text-[0.68rem] uppercase tracking-[0.16em] text-graphite">
-          {item.dateLabel}
-        </p>
         <h3
           className={cn(
             "mt-2 font-display font-normal leading-[1.05] tracking-[-0.03em] text-charcoal transition-colors duration-[400ms] group-hover:text-rsi-deep",
@@ -176,8 +170,8 @@ function NewsCard({
         </h3>
         <p
           className={cn(
-            "mt-2 leading-relaxed text-graphite",
-            featured ? "text-sm" : "line-clamp-2 text-[0.8rem]",
+            "type-body mt-2 font-body leading-relaxed text-graphite",
+            !featured && "line-clamp-2",
           )}
         >
           {item.excerpt}

@@ -109,8 +109,8 @@ export function About() {
               {about.body}
             </p>
             <p
-              className="max-w-xl font-body font-semibold leading-relaxed text-rsi"
-              style={{ fontSize: 16, marginTop: 0, marginBottom: 0 }}
+              className="type-body max-w-xl font-body !font-bold leading-relaxed text-rsi"
+              style={{ marginTop: 0, marginBottom: 0 }}
             >
               {about.support}
             </p>
@@ -152,7 +152,7 @@ export function About() {
                   >
                     0{suffix}
                   </span>
-                  <span aria-hidden className="text-sm leading-snug text-graphite">
+                  <span aria-hidden className="type-body font-body leading-snug text-graphite">
                     {stat.label}
                   </span>
                 </li>

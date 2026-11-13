@@ -75,8 +75,10 @@ export function VerticalBusinessCards() {
                 id={business.id}
                 data-business-panel
                 className={cn(
-                  "group grid grid-cols-1 border-t border-charcoal/15 lg:grid-cols-12",
-                  index === businesses.length - 1 && "border-b border-charcoal/15",
+                  "group grid grid-cols-1 lg:grid-cols-12",
+                  index > 0 &&
+                    index < businesses.length - 1 &&
+                    "border-y border-charcoal/15",
                 )}
               >
                 <div
@@ -123,16 +125,14 @@ export function VerticalBusinessCards() {
                   </h3>
                   <p
                     data-panel-copy
-                    className="mt-5 max-w-[36rem] font-body leading-[1.6] text-graphite"
-                    style={{ fontSize: "clamp(15px, 1.05vw, 17px)" }}
+                    className="type-body mt-5 max-w-[36rem] font-body leading-relaxed text-graphite"
                   >
                     {business.paragraph}
                   </p>
                   <div data-panel-copy className="mt-7 self-start">
                     <Button
                       href={`#${business.serviceAnchor}`}
-                      variant="secondary"
-                      className="border-charcoal text-charcoal hover:bg-charcoal hover:text-white"
+                      variant="primary"
                     >
                       {businessesPage.exploreLabel}
                     </Button>

@@ -269,7 +269,7 @@ export function ContactOverlay({ open, onClose, registerCloseRef }: ContactOverl
           <p
             id={descriptionId}
             ref={bodyRef}
-            className="mt-8 max-w-xl text-base leading-relaxed text-[#B8B8B8] md:text-lg"
+            className="type-body mt-8 max-w-xl font-body leading-relaxed text-[#B8B8B8]"
           >
             {contact.support}
           </p>
