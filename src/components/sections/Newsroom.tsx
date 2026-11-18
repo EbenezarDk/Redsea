@@ -62,6 +62,8 @@ function NewsPreviewDrawer({
           open ? "opacity-100" : "opacity-0",
         )}
         aria-label="Close story preview"
+        aria-hidden={!open}
+        tabIndex={open ? 0 : -1}
         onClick={onClose}
       />
       <div

@@ -221,7 +221,7 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="relative z-10 flex h-full min-h-[100svh] flex-col items-center justify-center pt-28 pb-24">
+      <div className="relative z-10 flex h-full min-h-[100svh] flex-col items-center justify-end pt-28 pb-[200px]">
         <div
           className={cn(
             "shell flex w-full flex-col items-center text-center transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
@@ -236,6 +236,7 @@ export function Hero() {
                   by="line"
                   as="p"
                   once
+                  accessible={false}
                   className="type-eyebrow font-body text-white/80"
                 >
                   {hero.eyebrow}
@@ -246,6 +247,7 @@ export function Hero() {
                   as="h1"
                   once
                   delay={0.08}
+                  accessible={false}
                   className="hero-headline font-display font-normal md:whitespace-nowrap"
                   style={{ marginTop: 0, marginBottom: 0 }}
                 >
@@ -257,7 +259,8 @@ export function Hero() {
                   as="p"
                   once
                   delay={0.16}
-                  className="type-body max-w-xl font-body leading-relaxed text-white/80"
+                  accessible={false}
+                  className="type-body max-w-xl font-body leading-relaxed text-white"
                   style={{ fontSize: 14, marginTop: 0, marginBottom: 0 }}
                 >
                   {hero.body}

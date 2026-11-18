@@ -94,10 +94,6 @@ export function AtAGlance() {
             <div className="relative min-h-[320px] w-full flex-1 sm:min-h-[400px] lg:min-h-[480px]">
               <WorldFootprintMap region={region} revealProgress={1} interactive />
             </div>
-            <p className="mt-3 text-right text-[0.68rem] leading-relaxed text-charcoal/45">
-              Highlighted markets reflect documented geographical project experience — not a map of
-              current RSI offices.
-            </p>
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@ export function BusinessPreview() {
     <ScrollScene
       id="businesses"
       labelledBy="businesses-title"
-      className="relative flex flex-col bg-charcoal text-white pt-[80px] pb-0"
+      className="flex flex-col bg-charcoal text-white pt-[80px] pb-[80px]"
     >
       <div className="shell flex flex-col pb-0">
         <div className="shrink-0 pb-3 md:pb-4">

@@ -1,7 +1,43 @@
+"use client";
+
+import { useState } from "react";
 import { about } from "@/data/site-content";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { ScrollScene } from "@/components/motion/ScrollScene";
+import { cn } from "@/lib/cn";
+
+function AboutVideo({ videoId }: { videoId: string }) {
+  const [interactive, setInteractive] = useState(false);
+
+  return (
+    <div
+      className="relative aspect-[16/10] w-full overflow-hidden bg-charcoal lg:aspect-auto lg:h-full lg:min-h-[28rem]"
+      onMouseLeave={() => setInteractive(false)}
+    >
+      <iframe
+        title="Red Sea International — About"
+        src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="strict-origin-when-cross-origin"
+        className={cn(
+          "absolute inset-0 h-full w-full border-0",
+          !interactive && "pointer-events-none",
+        )}
+      />
+      {!interactive ? (
+        <button
+          type="button"
+          className="absolute inset-0 z-10 cursor-pointer bg-transparent"
+          aria-label="Activate About video"
+          onClick={() => setInteractive(true)}
+        />
+      ) : null}
+    </div>
+  );
+}
 
 export function About() {
   return (
@@ -59,17 +95,7 @@ export function About() {
         </div>
 
         <div className="lg:col-span-7">
-          <div className="relative aspect-[16/10] w-full overflow-hidden bg-charcoal lg:aspect-auto lg:h-full lg:min-h-[28rem]">
-            <iframe
-              title="Red Sea International — About"
-              src={`https://www.youtube.com/embed/${about.videoId}?rel=0&modestbranding=1`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="strict-origin-when-cross-origin"
-              className="absolute inset-0 h-full w-full border-0"
-            />
-          </div>
+          <AboutVideo videoId={about.videoId} />
         </div>
       </div>
     </ScrollScene>

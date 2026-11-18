@@ -57,7 +57,10 @@ export function Footer() {
           <p>
             © <span ref={year} className="inline-block min-w-[4ch]" /> Red Sea International.
           </p>
-          <p>Modular studies stand in for approved photography.</p>
+          <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>Terms & Conditions</span>
+            <span>Privacy & Policies</span>
+          </p>
         </div>
       </InViewReveal>
     </footer>

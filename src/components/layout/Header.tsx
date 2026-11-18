@@ -49,6 +49,18 @@ const LIGHT_SECTION_IDS = new Set([
 const HERO_SECTION_IDS = new Set(["top", "businesses-intro"]);
 const DARK_SECTION_IDS = new Set(["businesses", "quick-links"]);
 
+function sectionFromPointNode(node: Element): HTMLElement | null {
+  if (!(node instanceof HTMLElement)) return null;
+  if (node.closest("header") || node.closest('[role="dialog"]') || node.closest("#mobile-nav")) {
+    return null;
+  }
+  // Cross-origin embeds (YouTube) sit in the stack but should resolve via their host section.
+  const host = node.tagName === "IFRAME" ? node.parentElement : node;
+  if (!host) return null;
+  const section = host.closest("section[id]");
+  return section instanceof HTMLElement && section.id ? section : null;
+}
+
 function findSectionUnderHeader(): HTMLElement | null {
   if (typeof document === "undefined") return null;
   const samplePoints = [
@@ -61,12 +73,8 @@ function findSectionUnderHeader(): HTMLElement | null {
   for (const x of samplePoints) {
     const stack = document.elementsFromPoint(x, y);
     for (const node of stack) {
-      if (!(node instanceof HTMLElement)) continue;
-      if (node.closest("header") || node.closest('[role="dialog"]') || node.closest("#mobile-nav")) {
-        continue;
-      }
-      const section = node.closest("section[id]");
-      if (section instanceof HTMLElement && section.id) return section;
+      const section = sectionFromPointNode(node);
+      if (section) return section;
     }
   }
 
@@ -85,7 +93,8 @@ function sampleSurfaceTone(): "light" | "dark" {
       continue;
     }
 
-    let current: HTMLElement | null = node;
+    // Start from the iframe host so transparent embed backgrounds don't thrash the header tone.
+    let current: HTMLElement | null = node.tagName === "IFRAME" ? node.parentElement : node;
     while (current && current !== document.documentElement) {
       const bg = getComputedStyle(current).backgroundColor;
       const light = isLightBackground(bg);
@@ -136,11 +145,9 @@ export function Header() {
     let frame = 0;
     const update = () => {
       frame = 0;
-      if (menuOpen || contactOpen) {
-        setSurface("hero");
-        return;
-      }
-      setSurface(resolveHeaderSurface());
+      const next: HeaderSurface =
+        menuOpen || contactOpen ? "hero" : resolveHeaderSurface();
+      setSurface((prev) => (prev === next ? prev : next));
     };
     const schedule = () => {
       if (frame) return;

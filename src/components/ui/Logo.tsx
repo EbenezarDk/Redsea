@@ -17,7 +17,7 @@ export function Logo({ className, imageClassName, onLight = false }: LogoProps) 
         width={160}
         height={96}
         priority
-        className={cn("h-[62px] w-auto", imageClassName)}
+        className={cn("w-auto", imageClassName ?? "h-[90px]")}
       />
     </span>
   );

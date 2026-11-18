@@ -1,12 +1,13 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
+import Link from "next/link";
 import {
-  CalendarDays,
-  ChartNoAxesCombined,
-  Coins,
-  FileText,
   ArrowUpRight,
+  Briefcase,
+  Handshake,
+  Network,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 import { InViewReveal } from "@/components/motion/InViewReveal";
@@ -18,23 +19,29 @@ const LINKS: readonly {
   id: string;
   title: string;
   Icon: LucideIcon;
+  href?: string;
 }[] = [
-  { id: "share-information", title: "Share Information", Icon: ChartNoAxesCombined },
-  { id: "dividends", title: "Dividends", Icon: Coins },
-  { id: "fact-sheet", title: "Fact Sheet", Icon: FileText },
-  { id: "ir-calendar", title: "IR Calendar", Icon: CalendarDays },
+  { id: "our-businesses", title: "Our Businesses", Icon: Briefcase, href: "/businesses" },
+  { id: "who-we-are", title: "Who we are", Icon: Users },
+  { id: "our-divisions", title: "Our Divisions", Icon: Network },
+  { id: "investor-relations", title: "Investor Relations", Icon: Handshake },
 ] as const;
 
 const HOVER_EASE = "power3.out";
 const HOVER_DURATION = 0.45;
 
+const cardClassName =
+  "group relative flex h-auto min-h-[9.5rem] flex-col justify-between bg-[#292B2F] p-5 text-white outline-none transition-colors duration-[450ms] ease-[cubic-bezier(0.215,0.61,0.355,1)] hover:bg-rsi focus-visible:bg-rsi sm:p-6";
+
 function QuickLinkCard({
   title,
   Icon,
+  href,
   className,
 }: {
   title: string;
   Icon: LucideIcon;
+  href?: string;
   className?: string;
 }) {
   const cardRef = useRef<HTMLElement>(null);
@@ -105,24 +112,24 @@ function QuickLinkCard({
   return (
     <article
       ref={cardRef}
-      tabIndex={0}
-      aria-label={title}
-      className={cn(
-        "group relative flex h-auto min-h-[9.5rem] flex-col justify-between bg-[#292B2F] p-5 text-white outline-none transition-colors duration-[450ms] ease-[cubic-bezier(0.215,0.61,0.355,1)] hover:bg-rsi focus-visible:bg-rsi sm:p-6",
-        className,
-      )}
+      aria-label={href ? undefined : title}
+      className={cn(cardClassName, className)}
     >
+      {href ? (
+        <Link href={href} aria-label={title} className="absolute inset-0 z-10" />
+      ) : null}
+
       <span
         ref={lineRef}
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-px origin-left bg-white/80"
       />
 
-      <span ref={iconRef} className="inline-flex w-fit will-change-transform">
+      <span ref={iconRef} className="relative inline-flex w-fit will-change-transform">
         <Icon size={28} strokeWidth={1.5} aria-hidden className="text-white" />
       </span>
 
-      <div className="mt-10 flex items-end justify-between gap-4">
+      <div className="relative mt-10 flex items-end justify-between gap-4">
         <span
           ref={titleRef}
           className="font-display text-[1.15rem] font-normal leading-[1.1] tracking-[-0.02em] text-white will-change-transform md:text-[1.25rem]"
@@ -158,6 +165,7 @@ export function QuickLinks() {
                 key={link.id}
                 title={link.title}
                 Icon={link.Icon}
+                href={link.href}
                 className={cn(
                   "reveal-item border-white/10",
                   index % 2 === 0 && "border-r",
