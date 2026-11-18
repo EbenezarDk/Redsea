@@ -22,8 +22,8 @@ export function BusinessesHero() {
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/70 to-charcoal/35"
       />
 
-      <div className="shell relative z-10 flex min-h-[min(100svh,920px)] w-full flex-col items-center justify-end pt-[max(5.5rem,calc(env(safe-area-inset-top)+4.5rem))] pb-[200px] lg:min-h-[100svh]">
-        <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-[6px] text-center">
+      <div className="shell relative z-10 flex min-h-[min(100svh,920px)] w-full min-w-0 flex-col items-center justify-end pt-[max(5.5rem,calc(env(safe-area-inset-top)+4.5rem))] pb-14 sm:pb-20 md:pb-28 lg:min-h-[100svh] lg:pb-[200px]">
+        <div className="mx-auto flex w-full min-w-0 max-w-4xl flex-col items-center gap-[6px] text-center">
           <TextAnimate
             animation="fadeIn"
             by="line"

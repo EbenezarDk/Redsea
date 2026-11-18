@@ -10,52 +10,82 @@ const phases = businessesPage.delivery.phases;
 
 export function IntegratedDelivery() {
   const root = useRef<HTMLElement>(null);
-  const line = useRef<HTMLSpanElement>(null);
-  const dots = useRef<HTMLSpanElement[]>([]);
+  const lineH = useRef<HTMLSpanElement>(null);
+  const lineV = useRef<HTMLSpanElement>(null);
+  const dotsH = useRef<HTMLSpanElement[]>([]);
+  const dotsV = useRef<HTMLSpanElement[]>([]);
 
   useLayoutEffect(() => {
     const section = root.current;
-    const fill = line.current;
-    const nodes = dots.current.filter(Boolean);
-    if (!section || !fill || !nodes.length) return;
+    if (!section) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const desktop = window.matchMedia("(min-width: 1024px)");
+
+    const paint = (progress: number, horizontal: boolean) => {
+      const fill = horizontal ? lineH.current : lineV.current;
+      const nodes = (horizontal ? dotsH.current : dotsV.current).filter(Boolean);
+      if (!fill || !nodes.length) return;
+
+      if (horizontal) gsap.set(fill, { scaleX: progress, scaleY: 1 });
+      else gsap.set(fill, { scaleY: progress, scaleX: 1 });
+
+      nodes.forEach((node, index) => {
+        const threshold = nodes.length <= 1 ? 0 : index / (nodes.length - 1);
+        const active = progress >= threshold - 0.001;
+        gsap.set(node, {
+          opacity: 1,
+          backgroundColor: active ? "#d71932" : "#E59EA5",
+        });
+      });
+    };
+
     if (reduced) {
-      gsap.set(fill, { scaleX: 1 });
-      gsap.set(nodes, { backgroundColor: "#d71932", opacity: 1, clearProps: "opacity" });
-      return;
+      const sync = () => paint(1, desktop.matches);
+      sync();
+      desktop.addEventListener("change", sync);
+      return () => desktop.removeEventListener("change", sync);
     }
 
     registerMotion();
-    const ctx = gsap.context(() => {
-      gsap.set(fill, { scaleX: 0, transformOrigin: "left center" });
+    let trigger: ScrollTrigger | null = null;
+
+    const setup = () => {
+      trigger?.kill();
+      trigger = null;
+
+      const horizontal = desktop.matches;
+      const fill = horizontal ? lineH.current : lineV.current;
+      const nodes = (horizontal ? dotsH.current : dotsV.current).filter(Boolean);
+      if (!fill || !nodes.length) return;
+
+      if (horizontal) {
+        gsap.set(fill, { scaleX: 0, scaleY: 1, transformOrigin: "left center" });
+      } else {
+        gsap.set(fill, { scaleY: 0, scaleX: 1, transformOrigin: "center top" });
+      }
       gsap.set(nodes, { backgroundColor: "#E59EA5", opacity: 1 });
 
-      const apply = (progress: number) => {
-        gsap.set(fill, { scaleX: progress });
-        nodes.forEach((node, index) => {
-          const threshold = nodes.length <= 1 ? 0 : index / (nodes.length - 1);
-          const active = progress >= threshold - 0.001;
-          gsap.set(node, {
-            opacity: 1,
-            backgroundColor: active ? "#d71932" : "#E59EA5",
-          });
-        });
-      };
-
-      const trigger = ScrollTrigger.create({
+      trigger = ScrollTrigger.create({
         trigger: section,
         start: "top 72%",
         end: "bottom 62%",
         scrub: true,
-        onUpdate: (self) => apply(self.progress),
-        onRefresh: (self) => apply(self.progress),
+        onUpdate: (self) => paint(self.progress, horizontal),
+        onRefresh: (self) => paint(self.progress, horizontal),
       });
 
-      apply(trigger.progress);
-    }, section);
+      paint(trigger.progress, horizontal);
+    };
 
-    return () => ctx.revert();
+    const ctx = gsap.context(setup, section);
+    desktop.addEventListener("change", setup);
+
+    return () => {
+      desktop.removeEventListener("change", setup);
+      trigger?.kill();
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -68,59 +98,94 @@ export function IntegratedDelivery() {
           </SectionHeading>
 
           <div className="mt-10 w-full" role="img" aria-label="Design, Build, Operate, Maintain">
-            <div className="relative h-4 w-full">
-              <span aria-hidden className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-rsi/25" />
+            {/* Mobile / tablet: vertical timeline */}
+            <div className="relative lg:hidden" aria-hidden="true">
               <span
-                ref={line}
-                aria-hidden
-                className="absolute inset-x-0 top-1/2 h-0.5 origin-left -translate-y-1/2 bg-rsi"
+                className="absolute top-1.5 bottom-1.5 left-[6px] w-px -translate-x-1/2 bg-rsi/25"
               />
-              <ol className="absolute inset-0 grid grid-cols-4">
+              <span
+                ref={lineV}
+                className="absolute top-1.5 bottom-1.5 left-[6px] w-0.5 origin-top -translate-x-1/2 bg-rsi"
+              />
+              <ol className="relative grid gap-8">
                 {phases.map((phase, index) => (
-                  <li
-                    key={phase.label}
-                    className={
-                      index === 0
-                        ? "flex items-center justify-start"
-                        : index === phases.length - 1
-                          ? "flex items-center justify-end"
-                          : "flex items-center justify-center"
-                    }
-                  >
-                    <span
-                      ref={(node) => {
-                        if (node) dots.current[index] = node;
-                      }}
-                      aria-hidden
-                      className="block size-3.5 rounded-full"
-                      style={{ backgroundColor: "#E59EA5" }}
-                    />
+                  <li key={phase.label} className="relative grid grid-cols-[12px_minmax(0,1fr)] gap-4">
+                    <span className="relative z-10 flex justify-center pt-1.5">
+                      <span
+                        ref={(node) => {
+                          if (node) dotsV.current[index] = node;
+                        }}
+                        className="block size-3.5 shrink-0 rounded-full"
+                        style={{ backgroundColor: "#E59EA5" }}
+                      />
+                    </span>
+                    <div className="min-w-0">
+                      <span className="font-display text-[clamp(1.35rem,5vw,2rem)] font-normal tracking-[-0.03em]">
+                        {phase.label}
+                      </span>
+                      <p className="type-body mt-1.5 max-w-md font-body leading-relaxed text-graphite">
+                        {phase.body}
+                      </p>
+                    </div>
                   </li>
                 ))}
               </ol>
             </div>
 
-            <ol className="mt-3 grid grid-cols-4 gap-2">
-              {phases.map((phase, index) => (
-                <li
-                  key={phase.label}
-                  className={
-                    index === 0
-                      ? "text-left"
-                      : index === phases.length - 1
-                        ? "text-right"
-                        : "text-center"
-                  }
-                >
-                  <span className="whitespace-nowrap font-display text-[clamp(1.2rem,2.4vw,2.4rem)] font-normal tracking-[-0.03em]">
-                    {phase.label}
-                  </span>
-                  <p className="type-body mt-2 whitespace-nowrap font-body leading-relaxed text-graphite">
-                    {phase.body}
-                  </p>
-                </li>
-              ))}
-            </ol>
+            {/* Desktop: horizontal timeline */}
+            <div className="hidden lg:block" aria-hidden="true">
+              <div className="relative h-4 w-full">
+                <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-rsi/25" />
+                <span
+                  ref={lineH}
+                  className="absolute inset-x-0 top-1/2 h-0.5 origin-left -translate-y-1/2 bg-rsi"
+                />
+                <ol className="absolute inset-0 grid grid-cols-4">
+                  {phases.map((phase, index) => (
+                    <li
+                      key={phase.label}
+                      className={
+                        index === 0
+                          ? "flex items-center justify-start"
+                          : index === phases.length - 1
+                            ? "flex items-center justify-end"
+                            : "flex items-center justify-center"
+                      }
+                    >
+                      <span
+                        ref={(node) => {
+                          if (node) dotsH.current[index] = node;
+                        }}
+                        className="block size-3.5 rounded-full"
+                        style={{ backgroundColor: "#E59EA5" }}
+                      />
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              <ol className="mt-3 grid grid-cols-4 gap-4">
+                {phases.map((phase, index) => (
+                  <li
+                    key={phase.label}
+                    className={
+                      index === 0
+                        ? "text-left"
+                        : index === phases.length - 1
+                          ? "text-right"
+                          : "text-center"
+                    }
+                  >
+                    <span className="whitespace-nowrap font-display text-[clamp(1.2rem,2.4vw,2.4rem)] font-normal tracking-[-0.03em]">
+                      {phase.label}
+                    </span>
+                    <p className="type-body mt-2 font-body leading-relaxed text-graphite">
+                      {phase.body}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
         </div>
       </InViewReveal>

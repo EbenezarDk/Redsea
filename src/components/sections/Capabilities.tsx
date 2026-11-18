@@ -11,7 +11,7 @@ export function Capabilities() {
           <Eyebrow rule={false}>{capabilities.eyebrow}</Eyebrow>
           <h2
             id="capabilities-title"
-            className="hero-headline font-display font-normal md:whitespace-nowrap"
+            className="hero-headline max-w-full font-display font-normal lg:whitespace-nowrap"
             style={{ fontSize: "clamp(2rem, 3.4vw, 3.25rem)", marginTop: 0, marginBottom: 0 }}
           >
             {capabilities.title.join(" ")}

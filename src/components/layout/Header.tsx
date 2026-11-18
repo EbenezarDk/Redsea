@@ -375,8 +375,12 @@ export function Header() {
             ref={buttonRef}
             type="button"
             className={cn(
-              "relative z-[60] inline-flex h-11 min-w-11 items-center justify-center text-[0.72rem] font-medium uppercase tracking-[0.16em]",
-              onLight ? "text-charcoal" : "text-white",
+              "group relative z-[60] inline-flex h-11 w-11 items-center justify-center rounded-full",
+              "outline-none transition-colors duration-300",
+              "focus-visible:ring-2 focus-visible:ring-rsi focus-visible:ring-offset-2",
+              onLight
+                ? "text-charcoal focus-visible:ring-offset-white"
+                : "text-white focus-visible:ring-offset-charcoal",
               !contactOpen && "lg:hidden",
             )}
             aria-expanded={contactOpen ? true : menuOpen}
@@ -391,7 +395,46 @@ export function Header() {
               setMenuOpen((current) => !current);
             }}
           >
-            {contactOpen || menuOpen ? "Close" : "Menu"}
+            <span
+              aria-hidden
+              className={cn(
+                "pointer-events-none absolute inset-0 rounded-full transition-[background-color,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                "group-hover:scale-100 group-active:scale-95",
+                onLight ? "group-hover:bg-charcoal/[0.06]" : "group-hover:bg-white/10",
+              )}
+            />
+            <span aria-hidden className="relative block h-[14px] w-5">
+              <span
+                className={cn(
+                  "absolute inset-x-0 top-0 mx-auto h-[1.5px] w-full rounded-full bg-current",
+                  "transition-[transform,opacity,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                  "motion-reduce:transition-none",
+                  contactOpen || menuOpen
+                    ? "translate-y-[6px] rotate-45"
+                    : "origin-left group-hover:translate-y-[1px] group-hover:scale-x-[0.72]",
+                )}
+              />
+              <span
+                className={cn(
+                  "absolute inset-x-0 top-[6px] mx-auto h-[1.5px] w-full origin-center rounded-full bg-current",
+                  "transition-[transform,opacity,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                  "motion-reduce:transition-none",
+                  contactOpen || menuOpen
+                    ? "scale-x-0 opacity-0"
+                    : "group-hover:scale-x-[0.38] group-hover:bg-rsi",
+                )}
+              />
+              <span
+                className={cn(
+                  "absolute inset-x-0 top-[12px] mx-auto h-[1.5px] w-full rounded-full bg-current",
+                  "transition-[transform,opacity,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                  "motion-reduce:transition-none",
+                  contactOpen || menuOpen
+                    ? "-translate-y-[6px] -rotate-45"
+                    : "origin-right group-hover:-translate-y-[1px] group-hover:scale-x-[0.72]",
+                )}
+              />
+            </span>
           </button>
         </div>
 

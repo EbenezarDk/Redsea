@@ -221,38 +221,55 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="relative z-10 flex h-full min-h-[100svh] flex-col items-center justify-end pt-28 pb-[200px]">
+      <div className="relative z-10 flex h-full min-h-[100svh] w-full flex-col items-center justify-end pt-28 pb-14 sm:pb-20 md:pb-28 lg:pb-[200px]">
         <div
           className={cn(
-            "shell flex w-full flex-col items-center text-center transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
+            "shell flex w-full min-w-0 flex-col items-center text-center transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
             showCopy ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
           )}
         >
           {showCopy ? (
             <>
-              <div className="flex flex-col items-center gap-[6px]">
+              <div className="flex w-full min-w-0 flex-col items-center gap-[6px]">
                 <TextAnimate
                   animation="fadeIn"
                   by="line"
                   as="p"
                   once
                   accessible={false}
-                  className="type-eyebrow font-body text-white/80"
+                  className="type-eyebrow max-w-full font-body text-white/80"
                 >
                   {hero.eyebrow}
                 </TextAnimate>
-                <TextAnimate
-                  animation="fadeIn"
-                  by="text"
-                  as="h1"
-                  once
-                  delay={0.08}
-                  accessible={false}
-                  className="hero-headline font-display font-normal md:whitespace-nowrap"
+                <h1
+                  className="hero-headline w-full max-w-full font-display font-normal"
                   style={{ marginTop: 0, marginBottom: 0 }}
                 >
-                  {hero.title.join(" ")}
-                </TextAnimate>
+                  <TextAnimate
+                    animation="fadeIn"
+                    by="text"
+                    as="span"
+                    once
+                    accessible={false}
+                    className="block max-w-full lg:inline"
+                    segmentClassName="!inline !whitespace-normal"
+                  >
+                    {hero.title[0]}
+                  </TextAnimate>
+                  <span className="hidden lg:inline"> </span>
+                  <TextAnimate
+                    animation="fadeIn"
+                    by="text"
+                    as="span"
+                    once
+                    delay={0.08}
+                    accessible={false}
+                    className="block max-w-full lg:inline"
+                    segmentClassName="!inline !whitespace-normal"
+                  >
+                    {hero.title[1]}
+                  </TextAnimate>
+                </h1>
                 <TextAnimate
                   animation="fadeIn"
                   by="line"
@@ -260,20 +277,17 @@ export function Hero() {
                   once
                   delay={0.16}
                   accessible={false}
-                  className="type-body max-w-xl font-body leading-relaxed text-white"
+                  className="type-body w-full min-w-0 max-w-xl font-body leading-relaxed text-white"
                   style={{ fontSize: 14, marginTop: 0, marginBottom: 0 }}
                 >
                   {hero.body}
                 </TextAnimate>
               </div>
-              <div
-                className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
-                style={{ marginTop: 40 }}
-              >
-                <Button href={hero.primary.href} variant="primary">
+              <div className="mt-8 flex w-full min-w-0 max-w-xl flex-col items-stretch gap-3 sm:mt-10 sm:flex-row sm:items-center sm:justify-center">
+                <Button href={hero.primary.href} variant="primary" className="w-full sm:w-auto">
                   {hero.primary.label}
                 </Button>
-                <Button href={hero.secondary.href} variant="secondary">
+                <Button href={hero.secondary.href} variant="secondary" className="w-full sm:w-auto">
                   {hero.secondary.label}
                 </Button>
               </div>
